@@ -1,5 +1,8 @@
-$year = 2026
-$days = @(02, 03, 04)
+# ===== EDIT EI 3 TA LINE SHUDHU =====
+$year  = 2024
+$month = 8              # 6 = June, 3 = March, etc.
+$days  = @(2, 3, 4)     # jekono din gulo array e likho
+# =====================================
 
 foreach ($day in $days) {
     $commitsToday = Get-Random -Minimum 10 -Maximum 15
@@ -9,7 +12,7 @@ foreach ($day in $days) {
         $minute = Get-Random -Minimum 0 -Maximum 59
         $second = Get-Random -Minimum 0 -Maximum 59
 
-        $dateStr = "{0}-06-{1:D2}T{2:D2}:{3:D2}:{4:D2}" -f $year, $day, $hour, $minute, $second
+        $dateStr = "{0}-{1:D2}-{2:D2}T{3:D2}:{4:D2}:{5:D2}" -f $year, $month, $day, $hour, $minute, $second
 
         Add-Content -Path "README.md" -Value "`n<!-- update $dateStr -->"
         git add .
@@ -18,7 +21,7 @@ foreach ($day in $days) {
         $env:GIT_COMMITTER_DATE = $dateStr
         git commit -m "Update" | Out-Null
     }
-    Write-Host "March $day, $year - $commitsToday commits done"
+    Write-Host "$year-$month-$day - $commitsToday commits done"
 }
 
 Remove-Item Env:\GIT_AUTHOR_DATE
