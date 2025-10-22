@@ -1,11 +1,11 @@
 # ===== EDIT EI 3 TA LINE SHUDHU =====
-$year  = 2024
-$month = 8              # 6 = June, 3 = March, etc.
-$days  = @(2, 3, 4)     # jekono din gulo array e likho
+$year  = 2025
+$month = 10              # 6 = June, 3 = March, etc.
+$days  = @(22, 23)     # jekono din gulo array e likho
 # =====================================
 
 foreach ($day in $days) {
-    $commitsToday = Get-Random -Minimum 10 -Maximum 15
+    $commitsToday = Get-Random -Minimum 1 -Maximum 3
 
     for ($i = 1; $i -le $commitsToday; $i++) {
         $hour = Get-Random -Minimum 9 -Maximum 22
