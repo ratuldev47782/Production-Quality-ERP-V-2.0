@@ -1,7 +1,7 @@
 # ===== CONFIG =====
 $startYear = 2026
 $endYear   = 2026
-$skipDayChance = 30   # % chance ekta din completely skip hoye jabe (kono commit hobe na)
+$skipDayChance = 30
 # ===================
 
 for ($year = $startYear; $year -le $endYear; $year++) {
@@ -11,15 +11,13 @@ for ($year = $startYear; $year -le $endYear; $year++) {
         for ($day = 1; $day -le $daysInMonth; $day++) {
 
             $currentDate = Get-Date -Year $year -Month $month -Day $day
-            if ($currentDate -gt (Get-Date)) { continue }  # future date skip
+            if ($currentDate -gt (Get-Date)) { continue }
 
-            # Friday skip
             if ($currentDate.DayOfWeek -eq "Friday") { continue }
 
-            # random overall day skip (majhe majhe gap thakbe)
             if ((Get-Random -Minimum 1 -Maximum 100) -le $skipDayChance) { continue }
 
-            $commitsToday = Get-Random -Minimum 0 -Maximum 12  # 0 mane sheidin kichu na thakleo hobe
+            $commitsToday = Get-Random -Minimum 0 -Maximum 12
 
             for ($i = 1; $i -le $commitsToday; $i++) {
                 $hour   = Get-Random -Minimum 9  -Maximum 22
@@ -43,7 +41,4 @@ for ($year = $startYear; $year -le $endYear; $year++) {
     }
 }
 
-Remove-Item Env:\GIT_AUTHOR_DATE -ErrorAction SilentlyContinue
-Remove-Item Env:\GIT_COMMITTER_DATE -ErrorAction SilentlyContinue
-
-git push
+Remove-Item Env:\GIT_AUTHOR_DATE -ErrorAction
