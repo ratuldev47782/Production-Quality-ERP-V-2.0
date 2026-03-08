@@ -749,3 +749,5 @@ The app is designed for **ready-made garments (RMG) factories**, with:
 <!-- update 2026-03-08T10:18:30 -->
 
 <!-- update 2026-03-08T11:49:12 -->
+
+<!-- update 2026-03-08T18:45:13 -->
