@@ -1,5 +1,5 @@
 $year = 2026
-$days = @(23, 24, 25)
+$days = @(26, 27, 28)
 
 foreach ($day in $days) {
     $commitsToday = Get-Random -Minimum 10 -Maximum 15
