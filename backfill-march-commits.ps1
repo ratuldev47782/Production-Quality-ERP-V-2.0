@@ -1,5 +1,5 @@
 $year = 2026
-$days = @(26, 27, 28)
+$days = @(02, 03, 04)
 
 foreach ($day in $days) {
     $commitsToday = Get-Random -Minimum 10 -Maximum 15
@@ -9,7 +9,7 @@ foreach ($day in $days) {
         $minute = Get-Random -Minimum 0 -Maximum 59
         $second = Get-Random -Minimum 0 -Maximum 59
 
-        $dateStr = "{0}-03-{1:D2}T{2:D2}:{3:D2}:{4:D2}" -f $year, $day, $hour, $minute, $second
+        $dateStr = "{0}-06-{1:D2}T{2:D2}:{3:D2}:{4:D2}" -f $year, $day, $hour, $minute, $second
 
         Add-Content -Path "README.md" -Value "`n<!-- update $dateStr -->"
         git add .
