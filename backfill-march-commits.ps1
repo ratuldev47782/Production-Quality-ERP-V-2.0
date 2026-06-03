@@ -1,5 +1,5 @@
 # ===== CONFIG =====
-$startYear = 2026
+$startYear = 2025
 $endYear   = 2026
 $skipDayChance = 30
 # ===================
