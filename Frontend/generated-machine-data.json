@@ -1,0 +1,2468 @@
+[
+  {
+    "factory": "K-2",
+    "machineName": "SINGLE NDL (TOP FEED) M/C",
+    "units": [
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-001",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-002",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-003",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-004",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-005",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-006",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-007",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-008",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-009",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-010",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-011",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-012",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-013",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-014",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-015",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-016",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-017",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-018",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-019",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-020",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-021",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-022",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-023",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-024",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-025",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-026",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-027",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-028",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-029",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-030",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-031",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-032",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-033",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-034",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-035",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-036",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-037",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-038",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-039",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-040",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-041",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-042",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-043",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-044",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-045",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-046",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-047",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-048",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-049",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-050",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-051",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-052",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-053",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-054",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-055",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-056",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-057",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-058",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-059",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-060",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-061",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-062",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-063",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-064",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-065",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-066",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-067",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-068",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-069",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-070",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-071",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-072",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-073",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-074",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-075",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-076",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-077",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-078",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-079",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-080",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-081",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-082",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-083",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-084",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-085",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-086",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-087",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-088",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-089",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-090",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-091",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-092",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-093",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-094",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-095",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-096",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-097",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-098",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-099",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-100",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-101",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-102",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-103",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-104",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-105",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-106",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-107",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-108",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-109",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-110",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-111",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-112",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-113",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-114",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-115",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-116",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-117",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-118",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-119",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-120",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-121",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-122",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-123",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-124",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-125",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-126",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-127",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-128",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-129",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-130",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-131",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-132",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-133",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-134",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-135",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-136",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-137",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-138",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-139",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-140",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-141",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-142",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-143",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-144",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-145",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-146",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-147",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-148",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-149",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-150",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-151",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-152",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-153",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-154",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-155",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-156",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-157",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-158",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-159",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-160",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-161",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-162",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-163",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-164",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-165",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-166",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-167",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-168",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-169",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-170",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-171",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-172",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-173",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-174",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-175",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-176",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-177",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-178",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-179",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-180",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-181",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-182",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-183",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-184",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-185",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-186",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-187",
+        "floorName": "A-2",
+        "status": "Running"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-188",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-189",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-190",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-191",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-192",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-193",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-194",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-195",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-196",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-197",
+        "floorName": "A-2",
+        "status": "Idle"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-198",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-199",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-200",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-201",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-202",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-203",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-204",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-205",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-206",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-207",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-208",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-209",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-210",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-211",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-212",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-213",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-214",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-215",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-216",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-217",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-218",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-219",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-220",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-221",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-222",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-223",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-224",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-225",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-226",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-227",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-228",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-229",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-230",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-231",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-232",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-233",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-234",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-235",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-236",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-237",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-238",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-239",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-240",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-241",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-242",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-243",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-244",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-245",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-246",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-247",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-248",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-249",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-250",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-251",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-252",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-253",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-254",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-255",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-256",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-257",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-258",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-259",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-260",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-261",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-262",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-263",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-264",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-265",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-266",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-267",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-268",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-269",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-270",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-271",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-272",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-273",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-274",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-275",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-276",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-277",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-278",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-279",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-280",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-281",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-282",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-283",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-284",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-285",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-286",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-287",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-288",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-289",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-290",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-291",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-292",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-293",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-294",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-295",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-296",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-297",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-298",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-299",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-300",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-301",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-302",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-303",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-304",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-305",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-306",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-307",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-308",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-309",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-310",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-311",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-312",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-313",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-314",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-315",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-316",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-317",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-318",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-319",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-320",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-321",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-322",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-323",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-324",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-325",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-326",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-327",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-328",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-329",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-330",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-331",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-332",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-333",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-334",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-335",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-336",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-337",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-338",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-339",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-340",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-341",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-342",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-343",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-344",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-345",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-346",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-347",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-348",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-349",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-350",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-351",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-352",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-353",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-354",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-355",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-356",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-357",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-358",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-359",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-360",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-361",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-362",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-363",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-364",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-365",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-366",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-367",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-368",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-369",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-370",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-371",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-372",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-373",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-374",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-375",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-376",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-377",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-378",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-379",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-380",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-381",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-382",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-383",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-384",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-385",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-386",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-387",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-388",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-389",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-390",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-391",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-392",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-393",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-394",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-395",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-396",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-397",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-398",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-399",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-400",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-401",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-402",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-403",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-404",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-405",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-406",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-407",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-408",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-409",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-410",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-411",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-412",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-413",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-414",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-415",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-416",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-417",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-418",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-419",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-420",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-421",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-422",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-423",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-424",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-425",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-426",
+        "floorName": "A-2",
+        "status": "Repairable"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-427",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-428",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-429",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-430",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-431",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-432",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-433",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-434",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-435",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-436",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-437",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-438",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-439",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-440",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-441",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-442",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-443",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-444",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-445",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-446",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-447",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-448",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-449",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-450",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-451",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-452",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-453",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-454",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-455",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-456",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-457",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-458",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-459",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-460",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-461",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-462",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-463",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-464",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-465",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-466",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-467",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-468",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-469",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-470",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-471",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-472",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-473",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-474",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-475",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-476",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-477",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-478",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-479",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-480",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-481",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-482",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-483",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-484",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-485",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-486",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-487",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-488",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-489",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-490",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-491",
+        "floorName": "A-2",
+        "status": "Damage"
+      },
+      {
+        "serialNumber": "SINGLE NDL (TOP FEED) M/C-492",
+        "floorName": "A-2",
+        "status": "Damage"
+      }
+    ]
+  }
+]

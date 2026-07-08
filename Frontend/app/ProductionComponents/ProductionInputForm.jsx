@@ -1,0 +1,965 @@
+// app/components/ProductionInputForm.jsx
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+
+const lines = [
+  "Line-1",
+  "Line-2",
+  "Line-3",
+  "Line-4",
+  "Line-5",
+  "Line-6",
+  "Line-7",
+  "Line-8",
+  "Line-9",
+  "Line-10",
+  "Line-11",
+  "Line-12",
+  "Line-13",
+  "Line-14",
+  "Line-15",
+  "Line-16",
+  "Line-17",
+];
+
+const buyers = [
+  "Decathlon - knit",
+  "Decathlon - woven",
+  "walmart",
+  "Columbia",
+  "ZXY",
+  "CTC",
+  "DIESEL",
+  "Sports Group Denmark",
+  "Identity",
+  "Fifth Avenur",
+];
+
+const initialForm = {
+  buyer: "",
+  style: "",
+  Item: "",
+  run_day: "",
+  color_model: "",
+  total_manpower: "",
+  manpower_present: "",
+  manpower_absent: "",
+  working_hour: "",
+  plan_quantity: "",
+  plan_efficiency_percent: "",
+  smv: "",
+  capacity: "",
+};
+
+function computeTargetPreview({
+  manpower_present,
+  working_hour,
+  smv,
+  plan_efficiency_percent,
+}) {
+  const mp = Number(manpower_present),
+    hr = Number(working_hour),
+    smvNum = Number(smv),
+    eff = Number(plan_efficiency_percent);
+  if ([mp, hr, smvNum, eff].some((n) => !Number.isFinite(n) || n <= 0))
+    return "";
+  const target = ((mp * hr * 60) / smvNum) * (eff / 100);
+  return Number.isFinite(target) && target > 0 ? Math.round(target) : "";
+}
+
+function getAuthUserInfo(auth) {
+  if (!auth) return null;
+  const id =
+    auth?.user?.id ||
+    auth?.user?._id ||
+    auth?.id ||
+    auth?._id ||
+    auth?.user_id ||
+    null;
+  const user_name = auth?.user?.user_name || auth?.user_name || "";
+  const role = auth?.user?.role || auth?.role || "";
+  if (!id) return null;
+  return { id, user_name, role };
+}
+
+function computeAbsent(total, present) {
+  const t = Number(total),
+    p = Number(present);
+  if (!Number.isFinite(t) || !Number.isFinite(p)) return "";
+  return String(Math.max(0, t - p));
+}
+
+export default function ProductionInputForm({
+  selectedLine: propLine,
+  setSelectedLine: propSetLine,
+  selectedDate: propDate,
+  setSelectedDate: propSetDate,
+}) {
+  const { auth, loading: authLoading } = useAuth();
+
+  const timeZone = useMemo(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Dhaka",
+    [],
+  );
+  const computeTodayKey = () =>
+    new Intl.DateTimeFormat("en-CA", { timeZone }).format(new Date());
+
+  const [internalDate, setInternalDate] = useState(computeTodayKey);
+  const [internalLine, setInternalLine] = useState("");
+
+  const selectedDate = propDate !== undefined ? propDate : internalDate;
+  const selectedLine = propLine !== undefined ? propLine : internalLine;
+  const setSelectedDate = propSetDate ?? setInternalDate;
+  const setSelectedLine = propSetLine ?? setInternalLine;
+
+  const [form, setForm] = useState(initialForm);
+  const [headers, setHeaders] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [loadingHeaders, setLoadingHeaders] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [prefillLoading, setPrefillLoading] = useState(false);
+  const [prefillFromDate, setPrefillFromDate] = useState("");
+
+  const formDirtyRef = useRef(false);
+  const lastPrefillKeyRef = useRef("");
+
+  const assignedBuilding =
+    auth?.assigned_building || auth?.user?.assigned_building || "";
+  const factory =
+    auth?.factory || auth?.user?.factory || auth?.assigned_factory || "";
+
+  const targetPreview = useMemo(
+    () => computeTargetPreview(form),
+    [
+      form.manpower_present,
+      form.working_hour,
+      form.smv,
+      form.plan_efficiency_percent,
+    ],
+  );
+
+  const busy = saving || loadingHeaders || authLoading || prefillLoading;
+
+  const resetForm = () => {
+    setForm(initialForm);
+    setEditingId(null);
+    setPrefillFromDate("");
+    formDirtyRef.current = false;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name !== "manpower_absent" && name !== "target_preview")
+      formDirtyRef.current = true;
+    setForm((prev) => {
+      const nextValue =
+        name === "color_model" || name === "Item" ? value.toUpperCase() : value;
+      const next = { ...prev, [name]: nextValue };
+      if (name === "total_manpower" || name === "manpower_present") {
+        const total = Number(next.total_manpower),
+          present = Number(next.manpower_present);
+        if (
+          next.total_manpower !== "" &&
+          next.manpower_present !== "" &&
+          Number.isFinite(total) &&
+          Number.isFinite(present)
+        ) {
+          next.manpower_absent = (
+            total - present >= 0 ? total - present : 0
+          ).toString();
+        } else {
+          next.manpower_absent = "";
+        }
+      }
+      return next;
+    });
+  };
+
+  const handleLineChange = (e) => {
+    setSelectedLine(e.target.value);
+    setHeaders([]);
+    resetForm();
+    setError("");
+    setSuccess("");
+  };
+
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+    setHeaders([]);
+    resetForm();
+    setError("");
+    setSuccess("");
+  };
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!assignedBuilding || !factory || !selectedLine || !selectedDate) {
+      setHeaders([]);
+      return;
+    }
+    const fetchHeaders = async () => {
+      try {
+        setLoadingHeaders(true);
+        setError("");
+        setSuccess("");
+        const url = new URL(
+          "/api/target-setter-header",
+          window.location.origin,
+        );
+        url.searchParams.set("assigned_building", assignedBuilding);
+        url.searchParams.set("line", selectedLine);
+        url.searchParams.set("date", selectedDate);
+        url.searchParams.set("factory", factory);
+        const res = await fetch(url, { cache: "no-store" });
+        const json = await res.json();
+        if (!res.ok || !json.success)
+          throw new Error(json.message || "Failed to load headers.");
+        setHeaders(json.data || []);
+      } catch (err) {
+        console.error(err);
+        setError(err.message || "Failed to load target headers.");
+        setHeaders([]);
+      } finally {
+        setLoadingHeaders(false);
+      }
+    };
+    fetchHeaders();
+  }, [authLoading, assignedBuilding, factory, selectedLine, selectedDate]);
+
+  useEffect(() => {
+    if (
+      authLoading ||
+      !assignedBuilding ||
+      !factory ||
+      !selectedLine ||
+      !selectedDate
+    )
+      return;
+    if (
+      editingId ||
+      loadingHeaders ||
+      headers.length > 0 ||
+      formDirtyRef.current
+    )
+      return;
+    const key = `${factory}|${assignedBuilding}|${selectedLine}|${selectedDate}`;
+    if (lastPrefillKeyRef.current === key) return;
+    lastPrefillKeyRef.current = key;
+
+    const run = async () => {
+      try {
+        setPrefillLoading(true);
+        setPrefillFromDate("");
+        const url = new URL(
+          "/api/target-setter-header",
+          window.location.origin,
+        );
+        url.searchParams.set("assigned_building", assignedBuilding);
+        url.searchParams.set("line", selectedLine);
+        url.searchParams.set("factory", factory);
+        url.searchParams.set("latest", "1");
+        url.searchParams.set("beforeDate", selectedDate);
+        const res = await fetch(url, { cache: "no-store" });
+        const json = await res.json();
+        if (!res.ok || !json.success) return;
+        const prev = json.data;
+        if (!prev) return;
+        const total =
+          prev.total_manpower != null ? String(prev.total_manpower) : "";
+        const present =
+          prev.manpower_present != null ? String(prev.manpower_present) : "";
+        setForm({
+          buyer: prev.buyer || "",
+          style: prev.style || "",
+          Item: (prev.Item || "").toUpperCase(),
+          run_day: prev.run_day != null ? String(prev.run_day) : "",
+          color_model: (prev.color_model || "").toUpperCase(),
+          total_manpower: total,
+          manpower_present: present,
+          manpower_absent: computeAbsent(total, present),
+          working_hour:
+            prev.working_hour != null ? String(prev.working_hour) : "",
+          plan_quantity:
+            prev.plan_quantity != null ? String(prev.plan_quantity) : "",
+          plan_efficiency_percent:
+            prev.plan_efficiency_percent != null
+              ? String(prev.plan_efficiency_percent)
+              : "",
+          smv: prev.smv != null ? String(prev.smv) : "",
+          capacity: prev.capacity != null ? String(prev.capacity) : "",
+        });
+        formDirtyRef.current = false;
+        setPrefillFromDate(prev.date || "");
+      } catch (e) {
+        console.error("Prefill error:", e);
+      } finally {
+        setPrefillLoading(false);
+      }
+    };
+    run();
+  }, [
+    authLoading,
+    assignedBuilding,
+    factory,
+    selectedLine,
+    selectedDate,
+    loadingHeaders,
+    headers.length,
+    editingId,
+  ]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    const userInfo = getAuthUserInfo(auth);
+    if (!userInfo) {
+      setError("Supervisor not authenticated.");
+      return;
+    }
+    if (!assignedBuilding) {
+      setError("Supervisor has no assigned building.");
+      return;
+    }
+    if (!factory) {
+      setError("Supervisor has no assigned factory.");
+      return;
+    }
+    if (!selectedLine) {
+      setError("Please select a line first.");
+      return;
+    }
+    if (!selectedDate) {
+      setError("Please select a date.");
+      return;
+    }
+    if (
+      !form.buyer ||
+      !form.style ||
+      !form.Item ||
+      !form.run_day ||
+      !form.color_model
+    ) {
+      setError("Buyer, Style, Item, Run day and Color/Model are required.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const payload = {
+        date: selectedDate,
+        assigned_building: assignedBuilding,
+        factory,
+        line: selectedLine,
+        buyer: form.buyer,
+        style: form.style,
+        Item: form.Item.toUpperCase(),
+        run_day: Number(form.run_day),
+        color_model: form.color_model.toUpperCase(),
+        total_manpower: Number(form.total_manpower),
+        manpower_present: Number(form.manpower_present),
+        manpower_absent:
+          form.manpower_absent !== ""
+            ? Number(form.manpower_absent)
+            : undefined,
+        working_hour: Number(form.working_hour),
+        plan_quantity: Number(form.plan_quantity),
+        plan_efficiency_percent: Number(form.plan_efficiency_percent),
+        smv: Number(form.smv),
+        capacity: Number(form.capacity),
+        user: userInfo,
+      };
+      const query = factory ? `?factory=${encodeURIComponent(factory)}` : "";
+      const endpoint = editingId
+        ? `/api/target-setter-header/${editingId}${query}`
+        : "/api/target-setter-header";
+      const res = await fetch(endpoint, {
+        method: editingId ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success)
+        throw new Error(json.message || "Failed to save target setter header.");
+      setSuccess(
+        editingId
+          ? "Target header updated successfully."
+          : "Target header created successfully.",
+      );
+      resetForm();
+      lastPrefillKeyRef.current = "";
+      if (assignedBuilding && selectedLine && selectedDate && factory) {
+        try {
+          const url = new URL(
+            "/api/target-setter-header",
+            window.location.origin,
+          );
+          url.searchParams.set("assigned_building", assignedBuilding);
+          url.searchParams.set("line", selectedLine);
+          url.searchParams.set("date", selectedDate);
+          url.searchParams.set("factory", factory);
+          const listRes = await fetch(url, { cache: "no-store" });
+          const listJson = await listRes.json();
+          if (listRes.ok && listJson.success) setHeaders(listJson.data || []);
+        } catch (err) {
+          console.error("Refetch error:", err);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Something went wrong while saving.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEdit = (header) => {
+    setError("");
+    setSuccess("");
+    setPrefillFromDate("");
+    setEditingId(header._id);
+    formDirtyRef.current = false;
+    setForm({
+      buyer: header.buyer || "",
+      style: header.style || "",
+      Item: header.Item || "",
+      run_day: header.run_day != null ? header.run_day.toString() : "",
+      color_model: header.color_model || "",
+      total_manpower:
+        header.total_manpower != null ? header.total_manpower.toString() : "",
+      manpower_present:
+        header.manpower_present != null
+          ? header.manpower_present.toString()
+          : "",
+      manpower_absent:
+        header.manpower_absent != null ? header.manpower_absent.toString() : "",
+      working_hour:
+        header.working_hour != null ? header.working_hour.toString() : "",
+      plan_quantity:
+        header.plan_quantity != null ? header.plan_quantity.toString() : "",
+      plan_efficiency_percent:
+        header.plan_efficiency_percent != null
+          ? header.plan_efficiency_percent.toString()
+          : "",
+      smv: header.smv != null ? header.smv.toString() : "",
+      capacity: header.capacity != null ? header.capacity.toString() : "",
+    });
+    setSelectedLine(header.line);
+    if (header.date) setSelectedDate(header.date);
+  };
+
+  const handleCancelEdit = () => {
+    resetForm();
+    setError("");
+    setSuccess("");
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this target header?")) return;
+    setError("");
+    setSuccess("");
+    setDeletingId(id);
+    try {
+      const query = factory ? `?factory=${encodeURIComponent(factory)}` : "";
+      const res = await fetch(`/api/target-setter-header/${id}${query}`, {
+        method: "DELETE",
+      });
+      let json = {};
+      try {
+        json = await res.json();
+      } catch (e) {}
+      if (res.status === 404) {
+        setSuccess("Header was already deleted (404). Syncing list.");
+        setHeaders((prev) => prev.filter((h) => h._id !== id));
+        if (editingId === id) resetForm();
+        return;
+      }
+      if (!res.ok || !json.success)
+        throw new Error(json.message || "Failed to delete header.");
+      setSuccess("Target header deleted.");
+      setHeaders((prev) => prev.filter((h) => h._id !== id));
+      if (editingId === id) resetForm();
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Something went wrong while deleting.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="card card-bordered shadow-sm border-slate-200 dark:border-slate-700 bg-base-100 dark:bg-slate-900 rounded-2xl">
+        {/* ── Header bar ── */}
+        <div className="border-b border-slate-200 dark:border-slate-700 bg-gray-200 dark:bg-slate-800 px-2 py-2 flex flex-wrap items-center justify-between gap-2 rounded-t-2xl">
+          <div>
+            <h2 className="text-xs md:text-sm font-semibold text-slate-900 dark:text-white">
+              Target Setter Header
+            </h2>
+            <p className="text-[10px] text-slate-800 dark:text-slate-300 mt-0.5 font-medium">
+              Factory:&nbsp;
+              <span className="badge badge-xs border-0 bg-blue-500/80 text-white font-semibold px-2 py-1 text-[10px]">
+                {factory || "Not assigned"}
+              </span>
+              &nbsp;| Building:&nbsp;
+              <span className="badge badge-xs border-0 bg-amber-500/80 text-white font-semibold px-2 py-1 text-[10px]">
+                {assignedBuilding || "Not assigned"}
+              </span>
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-end gap-2">
+            {/* Date */}
+            <div className="flex flex-col gap-0.5">
+              <label className="text-[10px] font-semibold text-slate-900 dark:text-slate-300">
+                Date
+              </label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={handleDateChange}
+                className="input input-xs bg-slate-50 dark:bg-slate-700 dark:text-white dark:border-slate-500 border-slate-300 text-[11px] text-black font-semibold focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 w-32"
+              />
+            </div>
+
+            {/* Line */}
+            <div className="flex flex-col gap-0.5">
+              <label className="text-[10px] font-semibold text-slate-900 dark:text-slate-300">
+                Line
+              </label>
+              <select
+                value={selectedLine}
+                onChange={handleLineChange}
+                className="select select-xs bg-slate-50 dark:bg-slate-700 dark:text-white dark:border-slate-500 border-slate-300 text-[11px] text-black font-semibold focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 min-w-[110px]"
+              >
+                <option value="">Select line</option>
+                {lines.map((line) => (
+                  <option key={line} value={line}>
+                    {line}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {propLine !== undefined && (
+              <div className="flex flex-col gap-0.5">
+                <div className="text-[10px] opacity-0 select-none">_</div>
+                <div className="badge bg-emerald-100 dark:bg-emerald-900/40 border border-emerald-400 dark:border-emerald-600 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300 px-2 py-2 gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+                  Synced with Board
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="card-body gap-3 p-3">
+          {error && (
+            <div className="alert alert-error py-1.5 px-2 text-[11px]">
+              <span>{error}</span>
+            </div>
+          )}
+          {success && (
+            <div className="alert alert-success py-1.5 px-2 text-[11px]">
+              <span>{success}</span>
+            </div>
+          )}
+
+          {!editingId &&
+            selectedLine &&
+            selectedDate &&
+            headers.length === 0 && (
+              <div className="text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
+                {prefillLoading ? (
+                  <span className="badge badge-sm bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border-0">
+                    Prefilling from previous day...
+                  </span>
+                ) : prefillFromDate ? (
+                  <span className="badge badge-sm bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-300 border-0">
+                    Auto filled from {prefillFromDate} (Run day need to change)
+                  </span>
+                ) : (
+                  <span className="badge badge-sm bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-300 border-0">
+                    No previous target found for this line
+                  </span>
+                )}
+              </div>
+            )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-start">
+            {/* ── Form ── */}
+            <form
+              onSubmit={handleSubmit}
+              className="rounded-xl border border-dashed border-amber-200 dark:border-amber-700 bg-amber-50/40 dark:bg-amber-900/10 p-2 space-y-2"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-[11px] md:text-[12px] font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  {editingId ? "Edit Target Header" : "New Target Header"}
+                </h3>
+                <div className="flex flex-wrap gap-1 text-[10px] text-slate-600 dark:text-slate-400">
+                  <span className="badge badge-ghost badge-xs border-slate-200 dark:border-slate-600 dark:text-slate-300 font-semibold px-2 py-0.5">
+                    {selectedDate || "Select date"}
+                  </span>
+                  <span className="badge badge-ghost badge-xs border-slate-200 dark:border-slate-600 dark:text-slate-300 font-semibold px-2 py-0.5">
+                    {selectedLine || "Select line"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* Buyer select */}
+                <div className="flex flex-col gap-0.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-300">
+                    Buyer
+                  </label>
+                  <select
+                    name="buyer"
+                    value={form.buyer}
+                    onChange={handleChange}
+                    className="select select-xs bg-slate-50 dark:bg-slate-700 dark:text-white dark:border-slate-500 border-slate-300 text-[11px] text-black font-semibold focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 w-full"
+                  >
+                    <option value="">Select buyer</option>
+                    {buyers.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <Field
+                  label="Style"
+                  name="style"
+                  value={form.style}
+                  onChange={handleChange}
+                  placeholder="Style no"
+                />
+                <Field
+                  label="Item"
+                  name="Item"
+                  value={form.Item}
+                  onChange={handleChange}
+                  placeholder="Item"
+                />
+                <Field
+                  label="Run day"
+                  name="run_day"
+                  value={form.run_day}
+                  onChange={handleChange}
+                  placeholder="(Required daily)"
+                  type="number"
+                />
+                <Field
+                  label="Color/Model"
+                  name="color_model"
+                  value={form.color_model}
+                  onChange={handleChange}
+                  placeholder="Color"
+                />
+                <Field
+                  label="Total Man Power"
+                  name="total_manpower"
+                  value={form.total_manpower}
+                  onChange={handleChange}
+                  placeholder="0"
+                  type="number"
+                />
+                <Field
+                  label="Manpower Present"
+                  name="manpower_present"
+                  value={form.manpower_present}
+                  onChange={handleChange}
+                  placeholder="0"
+                  type="number"
+                />
+                <Field
+                  label="Manpower Absent (auto)"
+                  name="manpower_absent"
+                  value={form.manpower_absent}
+                  onChange={handleChange}
+                  placeholder="Auto = Total - Present"
+                  type="number"
+                  readOnly
+                />
+                <Field
+                  label="Working Hour (for this style)"
+                  name="working_hour"
+                  value={form.working_hour}
+                  onChange={handleChange}
+                  placeholder="0"
+                  type="number"
+                />
+                <Field
+                  label="Plan Quantity"
+                  name="plan_quantity"
+                  value={form.plan_quantity}
+                  onChange={handleChange}
+                  placeholder="0"
+                  type="number"
+                />
+                <Field
+                  label="Plan Efficiency (%)"
+                  name="plan_efficiency_percent"
+                  value={form.plan_efficiency_percent}
+                  onChange={handleChange}
+                  placeholder="0"
+                  type="number"
+                />
+                <Field
+                  label="SMV (minutes)"
+                  name="smv"
+                  value={form.smv}
+                  onChange={handleChange}
+                  placeholder="0"
+                  type="number"
+                />
+                <Field
+                  label="Capacity"
+                  name="capacity"
+                  value={form.capacity}
+                  onChange={handleChange}
+                  placeholder="0"
+                  type="number"
+                />
+                <Field
+                  label="Target (preview, auto)"
+                  name="target_preview"
+                  value={targetPreview === "" ? "" : targetPreview.toString()}
+                  onChange={() => {}}
+                  placeholder="Auto from manpower, hour, SMV, efficiency"
+                  type="number"
+                  readOnly
+                />
+              </div>
+
+              <div className="flex justify-end gap-1.5 pt-1">
+                {editingId && (
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="btn btn-xs btn-ghost border border-slate-200 dark:border-slate-600 dark:text-slate-300 text-[11px] font-semibold text-slate-800"
+                    disabled={busy}
+                  >
+                    Cancel
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="btn btn-xs bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-semibold px-3 border-0 disabled:opacity-70"
+                  disabled={busy || !selectedLine}
+                >
+                  {saving
+                    ? "Saving..."
+                    : editingId
+                      ? "Update Target"
+                      : "Save Target"}
+                </button>
+              </div>
+            </form>
+
+            {/* ── Existing headers list ── */}
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2.5 space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[11px] md:text-[12px] font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span className="w-1 h-4 rounded-full bg-emerald-400/80" />
+                  Existing Targets
+                </h3>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 px-2 font-medium">
+                  {selectedLine && selectedDate
+                    ? `${selectedDate} • ${selectedLine}`
+                    : "Select date & line"}
+                </p>
+              </div>
+
+              {loadingHeaders ? (
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Loading...
+                </p>
+              ) : !selectedLine ? (
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Select a line to see existing target headers.
+                </p>
+              ) : headers.length === 0 ? (
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  No target headers for this date and line yet.
+                </p>
+              ) : (
+                <div className="space-y-1.5">
+                  {headers.map((h) => (
+                    <div
+                      key={h._id}
+                      className="border border-slate-200 dark:border-slate-600 rounded-lg p-2 flex flex-col gap-1.5 text-[10px] bg-amber-50/40 dark:bg-amber-900/10 hover:bg-amber-50/80 dark:hover:bg-amber-900/20 transition-colors"
+                    >
+                      <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-slate-700 dark:text-slate-300">
+                        <p className="font-semibold dark:text-slate-400">
+                          Buyer
+                        </p>
+                        <p className="font-semibold text-slate-900 dark:text-white">
+                          {h.buyer}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Style
+                        </p>
+                        <p className="font-semibold text-slate-900 dark:text-white">
+                          {h.style}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Item
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.Item || "-"}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Run day
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.run_day}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Color/Model
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.color_model}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Total Man Power
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.total_manpower}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Manpower Present
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.manpower_present}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Manpower Absent
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.manpower_absent}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Working Hour
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.working_hour}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Plan Quantity
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.plan_quantity}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Plan Efficiency (%)
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.plan_efficiency_percent}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          SMV (minutes)
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.smv}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Capacity
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.capacity}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Target
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.target_full_day ?? "-"}
+                        </p>
+
+                        <p className="font-semibold dark:text-slate-400">
+                          Created By
+                        </p>
+                        <p className="text-slate-900 dark:text-slate-200">
+                          {h.user?.user_name || "-"}
+                        </p>
+                      </div>
+
+                      <div className="flex justify-end gap-1 mt-1">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(h)}
+                          className="btn btn-xxs btn-outline border-amber-300 dark:border-amber-600 text-amber-800 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 font-semibold px-2 min-h-0 h-6"
+                          disabled={busy}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(h._id)}
+                          className="btn btn-xxs btn-outline border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 disabled:opacity-60 font-semibold px-2 min-h-0 h-6"
+                          disabled={busy || deletingId === h._id}
+                        >
+                          {deletingId === h._id ? "Deleting..." : "Delete"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Field component with full dark mode ───────────────────────────────────
+function Field({
+  label,
+  name,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  readOnly = false,
+}) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <label
+        htmlFor={name}
+        className="text-[10px] font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-300"
+      >
+        {label}
+      </label>
+      <input
+        id={name}
+        name={name}
+        value={value}
+        onChange={readOnly ? undefined : onChange}
+        type={type}
+        readOnly={readOnly}
+        className="input input-xs bg-slate-50 dark:bg-slate-700 dark:text-white dark:border-slate-500 dark:placeholder:text-slate-500 border-slate-300 text-[11px] text-black font-semibold placeholder:text-slate-400 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 disabled:bg-slate-100 dark:disabled:bg-slate-800 w-full read-only:bg-slate-100 dark:read-only:bg-slate-800/60 read-only:text-slate-500 dark:read-only:text-slate-400"
+        placeholder={placeholder}
+      />
+    </div>
+  );
+}
