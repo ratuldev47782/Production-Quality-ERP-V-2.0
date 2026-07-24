@@ -5,7 +5,7 @@ $days  = @(24,25, 26)     # jekono din gulo array e likho
 # =====================================
 
 foreach ($day in $days) {
-    $commitsToday = Get-Random -Minimum 1 -Maximum 3
+    $commitsToday = Get-Random -Minimum 1 -Maximum 20
 
     for ($i = 1; $i -le $commitsToday; $i++) {
         $hour = Get-Random -Minimum 9 -Maximum 22
