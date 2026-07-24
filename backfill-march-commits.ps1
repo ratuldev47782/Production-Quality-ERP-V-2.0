@@ -1,7 +1,7 @@
 # ===== EDIT EI 3 TA LINE SHUDHU =====
-$year  = 2025
-$month = 10              # 6 = June, 3 = March, etc.
-$days  = @(22, 23)     # jekono din gulo array e likho
+$year  = 2026
+$month = 7              # 6 = June, 3 = March, etc.
+$days  = @(24,25, 26)     # jekono din gulo array e likho
 # =====================================
 
 foreach ($day in $days) {
