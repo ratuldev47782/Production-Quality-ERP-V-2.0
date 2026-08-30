@@ -780,11 +780,10 @@ function TvLineCard({
     const fetchDefects = async () => {
       try {
         setDefectsLoading(true);
-        const dateIso = new Date(date + "T00:00:00").toISOString();
         const params = new URLSearchParams({
           factory,
           building,
-          date: dateIso,
+          date,
           limit: "1000",
         });
         const res = await fetch(
