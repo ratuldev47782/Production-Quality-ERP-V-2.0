@@ -1,9 +1,9 @@
 // app/api/floor-compare/route.js
-import { NextResponse } from "next/server";
 import { dbConnect } from "@/services/mongo";
+import { NextResponse } from "next/server";
 
-import TargetSetterHeader from "@/models/TargetSetterHeader";
 import { HourlyProductionModel } from "@/models/HourlyProduction-model";
+import TargetSetterHeader from "@/models/TargetSetterHeader";
 import { HourlyInspectionModel } from "@/models/hourly-inspections";
 
 export const dynamic = "force-dynamic";
@@ -27,15 +27,18 @@ function parseLocalDateFromYMD(dateStr) {
   return new Date(y, (m || 1) - 1, d || 1);
 }
 function getRangeBounds(fromStr, toStr) {
-  const from = parseLocalDateFromYMD(fromStr);
-  const to = parseLocalDateFromYMD(toStr);
-  if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
+  const fromMatch = String(fromStr || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const toMatch = String(toStr || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!fromMatch || !toMatch) {
     throw new Error("Invalid from/to date");
   }
-  const start = new Date(from);
-  start.setHours(0, 0, 0, 0);
-  const end = new Date(to);
-  end.setHours(23, 59, 59, 999);
+
+  const start = new Date(Date.UTC(
+    Number(fromMatch[1]), Number(fromMatch[2]) - 1, Number(fromMatch[3])
+  ));
+  const end = new Date(Date.UTC(
+    Number(toMatch[1]), Number(toMatch[2]) - 1, Number(toMatch[3]) + 1
+  ));
   return { start, end };
 }
 function listDateStrings(fromStr, toStr) {
@@ -266,7 +269,7 @@ export async function GET(req) {
     // -----------------------------------------
     const qualityMatch = {
       factory,
-      reportDate: { $gte: start, $lte: end },
+      reportDate: { $gte: start, $lt: end },
     };
 
     // ✅ supports both `building` and `assigned_building`
@@ -279,7 +282,13 @@ export async function GET(req) {
     // normalize building in aggregation
     const addFieldsNormalizeBuilding = {
       $addFields: {
-        _b: { $ifNull: ["$building", "$assigned_building"] },
+        _b: {
+          $cond: [
+            { $ne: [{ $ifNull: ["$building", ""] }, ""] },
+            "$building",
+            "$assigned_building",
+          ],
+        },
       },
     };
 
@@ -454,16 +463,23 @@ export async function GET(req) {
         const avgEff = p.availMin > 0 ? (p.produceMin / p.availMin) * 100 : 0;
 
         // quality mapping:
-        // - segment => building+line
+        // - segment => building+line, including quality-only rows
         let qKey = key;
-        if (groupBy === "segment") qKey = makeBuildingLineKey(p.building, p.line);
+        let rowBuilding = p.building || "";
+        let rowLine = p.line || "";
+        if (groupBy === "segment") {
+          const keyParts = String(key).split("__");
+          rowBuilding ||= keyParts[0] || "";
+          rowLine ||= keyParts[1] || "";
+          qKey = makeBuildingLineKey(rowBuilding, rowLine);
+        }
 
         const q = qualAgg[qKey] || { ...zeroQual };
 
         return {
           key,
-          building: p.building || "",
-          line: p.line || (groupBy === "line" ? key : ""),
+          building: rowBuilding,
+          line: rowLine || (groupBy === "line" ? key : ""),
           buyer: p.buyer || "",
           style: p.style || "",
           production: {

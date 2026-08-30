@@ -1,9 +1,9 @@
 // app/api/floor-summary/route.js
-import { NextResponse } from "next/server";
 import { dbConnect } from "@/services/mongo";
+import { NextResponse } from "next/server";
 
-import TargetSetterHeader from "@/models/TargetSetterHeader";
 import { HourlyProductionModel } from "@/models/HourlyProduction-model";
+import TargetSetterHeader from "@/models/TargetSetterHeader";
 import { HourlyInspectionModel } from "@/models/hourly-inspections";
 
 // ---------- helpers ----------
@@ -35,28 +35,14 @@ function computeBaseTargetPerHourFromHeader(header) {
   return targetFromCapacity || targetFromFullDay || 0;
 }
 
-// "2025-12-08" -> local Date(2025,11,8)
-function parseLocalDateFromYMD(dateStr) {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
-
 function getDayRange(dateStr) {
-  let base;
-  if (dateStr.includes("T")) {
-    base = new Date(dateStr);
-  } else {
-    base = parseLocalDateFromYMD(dateStr);
-  }
-  if (Number.isNaN(base.getTime())) {
-    throw new Error(`Invalid date: ${dateStr}`);
-  }
+  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) throw new Error(`Invalid date: ${dateStr}`);
 
-  const start = new Date(base);
-  start.setHours(0, 0, 0, 0);
-
-  const end = new Date(base);
-  end.setHours(23, 59, 59, 999);
+  const [, year, month, day] = match;
+  const start = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 1);
 
   return { start, end };
 }
@@ -377,7 +363,7 @@ export async function GET(req) {
 
     const qualityMatch = {
       factory,
-      reportDate: { $gte: start, $lte: end },
+      reportDate: { $gte: start, $lt: end },
     };
     if (building) {
       qualityMatch.building = building;

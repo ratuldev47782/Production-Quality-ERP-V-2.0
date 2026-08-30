@@ -1,9 +1,9 @@
 // app/api/floor-dashboard/route.js
-import { NextResponse } from "next/server";
 import { dbConnect } from "@/services/mongo";
+import { NextResponse } from "next/server";
 
-import TargetSetterHeader from "@/models/TargetSetterHeader";
 import { HourlyProductionModel } from "@/models/HourlyProduction-model";
+import TargetSetterHeader from "@/models/TargetSetterHeader";
 import { HourlyInspectionModel } from "@/models/hourly-inspections";
 
 export const dynamic = "force-dynamic";
@@ -34,30 +34,14 @@ function computeBaseTargetPerHourFromHeader(header) {
   return targetFromCapacity || targetFromFullDay || 0;
 }
 
-// "2025-12-08" -> local Date(2025, 11, 8, 00:00)
-function parseLocalDateFromYMD(dateStr) {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
-
 function getDayRange(dateStr) {
-  let base;
+  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) throw new Error(`Invalid date: ${dateStr}`);
 
-  if (dateStr.includes("T")) {
-    base = new Date(dateStr);
-  } else {
-    base = parseLocalDateFromYMD(dateStr);
-  }
-
-  if (Number.isNaN(base.getTime())) {
-    throw new Error(`Invalid date: ${dateStr}`);
-  }
-
-  const start = new Date(base);
-  start.setHours(0, 0, 0, 0);
-
-  const end = new Date(base);
-  end.setHours(23, 59, 59, 999);
+  const [, year, month, day] = match;
+  const start = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 1);
 
   return { start, end };
 }
@@ -183,7 +167,7 @@ export async function GET(req) {
         const workingHours = toNumberOrZero(h.working_hour);
         targetFullDay = Math.round(
           (Number.isFinite(baseTargetPerHourRaw) ? baseTargetPerHourRaw : 0) *
-            (Number.isFinite(workingHours) ? workingHours : 0)
+          (Number.isFinite(workingHours) ? workingHours : 0)
         );
       }
 
@@ -320,7 +304,7 @@ export async function GET(req) {
     const qualityMatch = {
       factory,
       building,
-      reportDate: { $gte: start, $lte: end },
+      reportDate: { $gte: start, $lt: end },
     };
     if (line && line !== "ALL") {
       qualityMatch.line = line;

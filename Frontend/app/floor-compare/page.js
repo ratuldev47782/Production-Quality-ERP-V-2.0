@@ -1,32 +1,45 @@
 // app/floor-compare/page.jsx
 "use client";
 
-import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ResponsiveContainer, LineChart, Line, CartesianGrid,
-  XAxis, YAxis, Tooltip, Legend, BarChart, Bar,
-} from "recharts";
-import {
-  ArrowLeftRight, CalendarDays, Factory, Layers,
-  TrendingUp, ShieldCheck, RefreshCw, ChevronUp, ChevronDown, Minus,
+  ArrowLeftRight, CalendarDays,
+  ChevronDown,
+  ChevronUp,
+  Factory, Layers,
+  Minus,
+  RefreshCw,
+  ShieldCheck,
+  TrendingUp,
 } from "lucide-react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis, YAxis,
+} from "recharts";
 
 // ─── constants ────────────────────────────────────────────────────────────────
 const factoryOptions = ["K-1", "K-2", "K-3"];
 const buildingOptions = ["", "A-2", "B-2", "A-3", "B-3", "A-4", "B-4", "A-5", "B-5"];
 const groupByOptions = [
-  { value: "line",     label: "Line-wise" },
+  { value: "line", label: "Line-wise" },
   { value: "building", label: "Floor-wise" },
-  { value: "segment",  label: "Line + Buyer + Style" },
+  { value: "segment", label: "Line + Buyer + Style" },
 ];
 const LINES = Array.from({ length: 30 }, (_, i) => `Line-${i + 1}`);
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
-function todayIso()      { return new Date().toISOString().slice(0, 10); }
-function daysAgoIso(d)   { const x = new Date(); x.setDate(x.getDate() - d); return x.toISOString().slice(0, 10); }
-function n(v, d = 0)     { const x = Number(v); return Number.isFinite(x) ? x.toFixed(d) : "-"; }
-function pct(v, d = 1)   { const x = Number(v); return Number.isFinite(x) ? `${x.toFixed(d)}%` : "-"; }
-function numVal(v)        { const x = Number(v); return Number.isFinite(x) ? x : 0; }
+function todayIso() { return new Date().toISOString().slice(0, 10); }
+function daysAgoIso(d) { const x = new Date(); x.setDate(x.getDate() - d); return x.toISOString().slice(0, 10); }
+function n(v, d = 0) { const x = Number(v); return Number.isFinite(x) ? x.toFixed(d) : "-"; }
+function pct(v, d = 1) { const x = Number(v); return Number.isFinite(x) ? `${x.toFixed(d)}%` : "-"; }
+function numVal(v) { const x = Number(v); return Number.isFinite(x) ? x : 0; }
 
 // shared dark tooltip (floats on any background)
 const tooltipStyle = { backgroundColor: "#020617", border: "1px solid #1f2937", fontSize: 11, color: "#e5e7eb" };
@@ -90,8 +103,8 @@ function PlanBar({ achieved, target }) {
 function QualPill({ value, type }) {
   const v = numVal(value);
   let color = "text-slate-500 dark:text-slate-400";
-  if (type === "rft")  color = v >= 90 ? "text-emerald-600 dark:text-emerald-400" : v >= 75 ? "text-amber-500 dark:text-amber-400" : "text-rose-500 dark:text-rose-400";
-  if (type === "dhu")  color = v <= 5  ? "text-emerald-600 dark:text-emerald-400" : v <= 15 ? "text-amber-500 dark:text-amber-400" : "text-rose-500 dark:text-rose-400";
+  if (type === "rft") color = v >= 90 ? "text-emerald-600 dark:text-emerald-400" : v >= 75 ? "text-amber-500 dark:text-amber-400" : "text-rose-500 dark:text-rose-400";
+  if (type === "dhu") color = v <= 5 ? "text-emerald-600 dark:text-emerald-400" : v <= 15 ? "text-amber-500 dark:text-amber-400" : "text-rose-500 dark:text-rose-400";
   if (type === "defect") color = v <= 5 ? "text-emerald-600 dark:text-emerald-400" : v <= 15 ? "text-amber-500 dark:text-amber-400" : "text-rose-500 dark:text-rose-400";
   return <span className={`font-semibold tabular-nums ${color}`}>{n(v, 1)}%</span>;
 }
@@ -101,17 +114,17 @@ function lineSortKey(l = "") { const m = String(l).match(/(\d+)/); return m ? +m
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function FloorComparePage() {
-  const [factory,    setFactory]    = useState("K-2");
-  const [building,   setBuilding]   = useState("");
-  const [groupBy,    setGroupBy]    = useState("segment");
+  const [factory, setFactory] = useState("K-2");
+  const [building, setBuilding] = useState("");
+  const [groupBy, setGroupBy] = useState("segment");
   const [lineFilter, setLineFilter] = useState("ALL");
-  const [from,       setFrom]       = useState(() => daysAgoIso(4));
-  const [to,         setTo]         = useState(() => todayIso());
+  const [from, setFrom] = useState(() => daysAgoIso(4));
+  const [to, setTo] = useState(() => todayIso());
 
-  const [data,        setData]        = useState(null);
-  const [loading,     setLoading]     = useState(false);
-  const [refreshing,  setRefreshing]  = useState(false);
-  const [error,       setError]       = useState("");
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState("");
   const [lastUpdated, setLastUpdated] = useState(null);
 
   const hasDataRef = useRef(false);
@@ -124,7 +137,7 @@ export default function FloorComparePage() {
 
     const run = async () => {
       if (cancelled) return;
-      try { controller?.abort(); } catch {}
+      try { controller?.abort(); } catch { }
       controller = new AbortController();
       const first = !hasDataRef.current;
       try {
@@ -134,7 +147,7 @@ export default function FloorComparePage() {
         const p = new URLSearchParams({ factory, from, to, groupBy, line: lineFilter });
         if (building) p.append("building", building);
 
-        const res  = await fetch(`/api/floor-compare?${p}`, { cache: "no-store", signal: controller.signal });
+        const res = await fetch(`/api/floor-compare?${p}`, { cache: "no-store", signal: controller.signal });
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json?.success) throw new Error(json?.message || "Failed to load");
 
@@ -153,7 +166,7 @@ export default function FloorComparePage() {
     document.addEventListener("visibilitychange", vis);
     return () => {
       cancelled = true;
-      try { controller?.abort(); } catch {}
+      try { controller?.abort(); } catch { }
       clearInterval(timerId);
       document.removeEventListener("visibilitychange", vis);
     };
@@ -161,24 +174,24 @@ export default function FloorComparePage() {
 
   // ── derived data ──────────────────────────────────────────────────────────
   const summaryProd = data?.summary?.production || {};
-  const summaryQual = data?.summary?.quality    || {};
-  const series      = data?.series || [];
-  const rows        = data?.rows   || [];
+  const summaryQual = data?.summary?.quality || {};
+  const series = data?.series || [];
+  const rows = data?.rows || [];
   const metaBuildings = data?.meta?.buildings || [];
-  const metaLines     = data?.meta?.lines     || LINES;
+  const metaLines = data?.meta?.lines || LINES;
 
   const productionTrend = useMemo(() => series.map((d) => ({
-    date:     d.date,
-    target:   numVal(d.production?.targetQty),
+    date: d.date,
+    target: numVal(d.production?.targetQty),
     achieved: numVal(d.production?.achievedQty),
     variance: numVal(d.production?.varianceQty),
-    eff:      numVal(d.production?.effPercent),
+    eff: numVal(d.production?.effPercent),
   })), [series]);
 
   const qualityTrend = useMemo(() => series.map((d) => ({
-    date:       d.date,
-    rft:        numVal(d.quality?.rftPercent),
-    dhu:        numVal(d.quality?.dhuPercent),
+    date: d.date,
+    rft: numVal(d.quality?.rftPercent),
+    dhu: numVal(d.quality?.dhuPercent),
     defectRate: numVal(d.quality?.defectRatePercent),
   })), [series]);
 
@@ -190,15 +203,15 @@ export default function FloorComparePage() {
     const map = {};
     for (const r of rows) {
       const b = r.building || "—";
-      const l = r.line    || "—";
-      if (!map[b])    map[b]    = {};
+      const l = r.line || "—";
+      if (!map[b]) map[b] = {};
       if (!map[b][l]) map[b][l] = [];
       map[b][l].push(r);
     }
     // sort each line's rows by buyer then style
     for (const b of Object.keys(map))
       for (const l of Object.keys(map[b]))
-        map[b][l].sort((a, c) => String(a.buyer||"").localeCompare(String(c.buyer||"")) || String(a.style||"").localeCompare(String(c.style||"")));
+        map[b][l].sort((a, c) => String(a.buyer || "").localeCompare(String(c.buyer || "")) || String(a.style || "").localeCompare(String(c.style || "")));
     return map;
   }, [rows, groupBy]);
 
@@ -312,17 +325,17 @@ export default function FloorComparePage() {
 
         {/* ── KPI CARDS ──────────────────────────────────────────────────── */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-          <KpiCard icon={TrendingUp}  title="Total Target"    value={n(summaryProd.totalTargetQty, 0)}   sub={`Avg/day ${n(summaryProd.avgTargetPerDay, 0)}`} />
-          <KpiCard icon={TrendingUp}  title="Total Achieved"  value={n(summaryProd.totalAchievedQty, 0)} sub={`Avg/day ${n(summaryProd.avgAchievedPerDay, 0)}`} />
-          <KpiCard icon={TrendingUp}  title="Variance"        value={n(summaryProd.totalVarianceQty, 0)} sub={`${summaryProd.daysCount ?? 0} days`}
+          <KpiCard icon={TrendingUp} title="Total Target" value={n(summaryProd.totalTargetQty, 0)} sub={`Avg/day ${n(summaryProd.avgTargetPerDay, 0)}`} />
+          <KpiCard icon={TrendingUp} title="Total Achieved" value={n(summaryProd.totalAchievedQty, 0)} sub={`Avg/day ${n(summaryProd.avgAchievedPerDay, 0)}`} />
+          <KpiCard icon={TrendingUp} title="Variance" value={n(summaryProd.totalVarianceQty, 0)} sub={`${summaryProd.daysCount ?? 0} days`}
             accent={numVal(summaryProd.totalVarianceQty) >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"} />
-          <KpiCard icon={ShieldCheck} title="Avg Efficiency"  value={pct(summaryProd.avgEffPercent, 1)}  accent={effColor(summaryProd.avgEffPercent)} />
-          <KpiCard icon={ShieldCheck} title="Total Inspected" value={n(summaryQual.totalInspected, 0)}   sub={`Defective Pcs ${n(summaryQual.totalDefectivePcs, 0)}`} />
-          <KpiCard icon={ShieldCheck} title="Total Passed"    value={n(summaryQual.totalPassed, 0)}      sub={`Total Defects ${n(summaryQual.totalDefects, 0)}`} />
+          <KpiCard icon={ShieldCheck} title="Avg Efficiency" value={pct(summaryProd.avgEffPercent, 1)} accent={effColor(summaryProd.avgEffPercent)} />
+          <KpiCard icon={ShieldCheck} title="Total Inspected" value={n(summaryQual.totalInspected, 0)} sub={`Defective Pcs ${n(summaryQual.totalDefectivePcs, 0)}`} />
+          <KpiCard icon={ShieldCheck} title="Total Passed" value={n(summaryQual.totalPassed, 0)} sub={`Total Defects ${n(summaryQual.totalDefects, 0)}`} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <KpiCard icon={ShieldCheck} title="RFT%"        value={pct(summaryQual.rftPercent, 1)}        accent={effColor(summaryQual.rftPercent)} />
-          <KpiCard icon={ShieldCheck} title="DHU%"        value={pct(summaryQual.dhuPercent, 1)}        sub={`Total Defects ${n(summaryQual.totalDefects, 0)}`} />
+          <KpiCard icon={ShieldCheck} title="RFT%" value={pct(summaryQual.rftPercent, 1)} accent={effColor(summaryQual.rftPercent)} />
+          <KpiCard icon={ShieldCheck} title="DHU%" value={pct(summaryQual.dhuPercent, 1)} sub={`Total Defects ${n(summaryQual.totalDefects, 0)}`} />
           <KpiCard icon={ShieldCheck} title="Defect Rate%" value={pct(summaryQual.defectRatePercent, 1)} sub={`Defective Pcs ${n(summaryQual.totalDefectivePcs, 0)}`} />
         </div>
 
@@ -339,7 +352,7 @@ export default function FloorComparePage() {
                   <YAxis tick={{ fill: "#64748b", fontSize: 10 }} />
                   <Tooltip contentStyle={tooltipStyle} />
                   <Legend wrapperStyle={{ fontSize: 10, color: "#64748b" }} />
-                  <Bar dataKey="target"   name="Target"   fill="#38bdf8" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="target" name="Target" fill="#38bdf8" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="achieved" name="Achieved" fill="#22c55e" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -369,12 +382,13 @@ export default function FloorComparePage() {
                 <LineChart data={qualityTrend}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" />
                   <XAxis dataKey="date" tick={{ fill: "#64748b", fontSize: 10 }} />
-                  <YAxis tick={{ fill: "#64748b", fontSize: 10 }} domain={[0, 100]} />
+                  <YAxis yAxisId="rft" tick={{ fill: "#64748b", fontSize: 10 }} domain={[0, 100]} />
+                  <YAxis yAxisId="defects" orientation="right" tick={{ fill: "#64748b", fontSize: 10 }} domain={[0, "auto"]} />
                   <Tooltip contentStyle={tooltipStyle} formatter={(v) => pct(v, 1)} />
                   <Legend wrapperStyle={{ fontSize: 10, color: "#64748b" }} />
-                  <Line type="monotone" dataKey="rft"        name="RFT%"         stroke="#22c55e" dot={false} strokeWidth={2} />
-                  <Line type="monotone" dataKey="dhu"        name="DHU%"         stroke="#f97316" dot={false} strokeWidth={2} />
-                  <Line type="monotone" dataKey="defectRate" name="Defect Rate%" stroke="#ef4444" dot={false} strokeWidth={2} />
+                  <Line yAxisId="rft" type="monotone" dataKey="rft" name="RFT%" stroke="#22c55e" dot={{ r: 3 }} strokeWidth={2} connectNulls />
+                  <Line yAxisId="defects" type="monotone" dataKey="dhu" name="DHU%" stroke="#f97316" dot={{ r: 3 }} strokeWidth={2} connectNulls />
+                  <Line yAxisId="defects" type="monotone" dataKey="defectRate" name="Defect Rate%" stroke="#ef4444" dot={{ r: 3 }} strokeWidth={2} connectNulls />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -491,8 +505,8 @@ function FlatTable({ rows, groupBy }) {
             {/* quality */}
             <td className="px-3 py-2 tabular-nums border-l border-l-emerald-100 dark:border-l-emerald-900/50">{n(r.quality?.totalInspected, 0)}</td>
             <td className="px-3 py-2 tabular-nums">{n(r.quality?.totalPassed, 0)}</td>
-            <td className="px-3 py-2 tabular-nums"><QualPill value={r.quality?.rftPercent}        type="rft" /></td>
-            <td className="px-3 py-2 tabular-nums"><QualPill value={r.quality?.dhuPercent}        type="dhu" /></td>
+            <td className="px-3 py-2 tabular-nums"><QualPill value={r.quality?.rftPercent} type="rft" /></td>
+            <td className="px-3 py-2 tabular-nums"><QualPill value={r.quality?.dhuPercent} type="dhu" /></td>
             <td className="px-3 py-2 tabular-nums border-r border-r-emerald-100 dark:border-r-emerald-900/50"><QualPill value={r.quality?.defectRatePercent} type="defect" /></td>
           </tr>
         ))}
@@ -604,8 +618,8 @@ function SegmentTable({ buildingsToRender, linesForBuilding, rowsByBuildingLine,
                           {/* quality */}
                           <td className="px-3 py-2 tabular-nums border-l border-l-emerald-100 dark:border-l-emerald-900/50">{n(r.quality?.totalInspected, 0)}</td>
                           <td className="px-3 py-2 tabular-nums">{n(r.quality?.totalPassed, 0)}</td>
-                          <td className="px-3 py-2 tabular-nums"><QualPill value={r.quality?.rftPercent}        type="rft" /></td>
-                          <td className="px-3 py-2 tabular-nums"><QualPill value={r.quality?.dhuPercent}        type="dhu" /></td>
+                          <td className="px-3 py-2 tabular-nums"><QualPill value={r.quality?.rftPercent} type="rft" /></td>
+                          <td className="px-3 py-2 tabular-nums"><QualPill value={r.quality?.dhuPercent} type="dhu" /></td>
                           <td className="px-3 py-2 tabular-nums border-r border-r-emerald-100 dark:border-r-emerald-900/50"><QualPill value={r.quality?.defectRatePercent} type="defect" /></td>
                         </tr>
                       ))
