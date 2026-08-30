@@ -157,7 +157,10 @@ export default function BulkHourEntryForm() {
   // stay locked-looking (badge) but their inputs become editable and Save
   // routes them through PATCH instead of the bulk-create POST.
   const [editingLines, setEditingLines] = useState(new Set());
-  const [expandedLine, setExpandedLine] = useState(null);
+  // editBaselines: { [line]: snapshotAtUnlockTime } — used only to detect
+  // whether the user has actually changed anything since clicking "Edit",
+  // so the "Editing" badge doesn't show up the instant a line is unlocked.
+  const [editBaselines, setEditBaselines] = useState({});
 
   const [loadingExisting, setLoadingExisting] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -207,12 +210,11 @@ export default function BulkHourEntryForm() {
   // for a draft matching this exact date+hour+building+factory — if the page
   // got refreshed before Save was clicked, restore whatever was typed.
   useEffect(() => {
-    setExpandedLine(null);
-
     if (!selectedHour) {
       draftKeyRef.current = null;
       setRowsMap({});
       setEditingLines(new Set());
+      setEditBaselines({});
       return;
     }
 
@@ -268,26 +270,34 @@ export default function BulkHourEntryForm() {
   const startEdit = (line) => {
     const existing = existingRows[line];
     if (!existing) return;
+    const snapshot = {
+      inspectedQty: String(existing.inspectedQty ?? ""),
+      passedQty: String(existing.passedQty ?? ""),
+      defectivePcs: String(existing.defectivePcs ?? ""),
+      afterRepair: String(existing.afterRepair ?? ""),
+      selectedDefects: Array.isArray(existing.selectedDefects)
+        ? existing.selectedDefects.map((d) => ({ name: d.name, quantity: String(d.quantity ?? "") }))
+        : [],
+    };
     setEditingLines((prev) => new Set(prev).add(line));
-    setRowsMap((prev) => ({
-      ...prev,
-      [line]: {
-        inspectedQty: String(existing.inspectedQty ?? ""),
-        passedQty: String(existing.passedQty ?? ""),
-        defectivePcs: String(existing.defectivePcs ?? ""),
-        afterRepair: String(existing.afterRepair ?? ""),
-        selectedDefects: Array.isArray(existing.selectedDefects)
-          ? existing.selectedDefects.map((d) => ({ name: d.name, quantity: String(d.quantity ?? "") }))
-          : [],
-      },
-    }));
+    setEditBaselines((prev) => ({ ...prev, [line]: snapshot }));
+    setRowsMap((prev) => ({ ...prev, [line]: snapshot }));
   };
 
   // Re-lock a line without saving — discards whatever was typed since Edit.
   const cancelEdit = (line) => {
     setEditingLines((prev) => { const next = new Set(prev); next.delete(line); return next; });
+    setEditBaselines((prev) => { const next = { ...prev }; delete next[line]; return next; });
     setRowsMap((prev) => { const next = { ...prev }; delete next[line]; return next; });
-    setExpandedLine((prev) => (prev === line ? null : prev));
+  };
+
+  // True only once the user has actually changed a value since unlocking —
+  // clicking "Edit" alone should not flip the badge to "Editing".
+  const isDirty = (line) => {
+    const baseline = editBaselines[line];
+    if (!baseline) return false;
+    const current = { ...emptyRow(), ...rowsMap[line] };
+    return JSON.stringify(baseline) !== JSON.stringify(current);
   };
 
   const updateRow = (line, field, value) => {
@@ -430,6 +440,7 @@ export default function BulkHourEntryForm() {
             updatedCount += 1;
             setRowsMap((prev) => { const next = { ...prev }; delete next[line]; return next; });
             setEditingLines((prev) => { const next = new Set(prev); next.delete(line); return next; });
+            setEditBaselines((prev) => { const next = { ...prev }; delete next[line]; return next; });
             setExistingRows((prev) => ({ ...prev, [line]: r.value.data }));
           } else {
             updateFailed.push(line);
@@ -470,7 +481,7 @@ export default function BulkHourEntryForm() {
         </div>
       )}
 
-      <div className="mx-auto max-w-5xl p-4 md:p-6">
+      <div className="mx-auto max-w-[1800px] p-4 md:p-6">
         {/* Header / controls */}
         <div className="card bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl overflow-hidden mb-4">
           <div className="h-[3px] bg-gradient-to-r from-emerald-500 to-sky-500" />
@@ -548,125 +559,179 @@ export default function BulkHourEntryForm() {
           </div>
         ) : (
           <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
-            {/* Column headers (desktop) */}
-            <div className="hidden md:grid grid-cols-[110px_1fr_1fr_1fr_1fr_90px] gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40">
-              <div>Line</div>
-              <div>Inspected</div>
-              <div>Passed</div>
-              <div>Defective</div>
-              <div>After Repair</div>
-              <div>Defects</div>
-            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[1500px] text-sm">
+                <thead className="bg-gray-50 dark:bg-gray-900/50 text-xs uppercase text-gray-500 dark:text-gray-400">
+                  <tr>
+                    <th className="px-4 py-3 text-left w-40">Line</th>
+                    <th className="px-4 py-3 text-left w-32">Inspected</th>
+                    <th className="px-4 py-3 text-left w-32">Passed</th>
+                    <th className="px-4 py-3 text-left w-36">Defective</th>
+                    <th className="px-4 py-3 text-left w-32">After Repair</th>
+                    <th className="px-4 py-3 text-left">Defects</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  {lineOptions.map((line) => {
+                    const row = { ...emptyRow(), ...rowsMap[line] };
+                    const hasExisting = !!existingRows[line];
+                    const isEditing = editingLines.has(line);
+                    const disabled = hasExisting && !isEditing;
+                    const isDraft = !hasExisting && rowHasData(row);
+                    const defectTotal = row.selectedDefects.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0);
 
-            <div className="divide-y divide-gray-100 dark:divide-gray-700">
-              {lineOptions.map((line) => {
-                const row = { ...emptyRow(), ...rowsMap[line] };
-                const hasExisting = !!existingRows[line];
-                const isEditing = editingLines.has(line);
-                const disabled = hasExisting && !isEditing;
-                const isExpanded = expandedLine === line;
+                    // Inspected - Passed should equal Defective Pcs. Flag it in
+                    // red whenever the numbers don't reconcile, same rule as
+                    // the single-entry quality input page.
+                    const inspectedNum = Number(row.inspectedQty || 0);
+                    const passedNum = Number(row.passedQty || 0);
+                    const defectiveNum = Number(row.defectivePcs || 0);
+                    const hasQtyData = row.inspectedQty !== "" || row.passedQty !== "" || row.defectivePcs !== "";
+                    const expectedDefective = inspectedNum - passedNum;
+                    const qtyMismatch = hasQtyData && expectedDefective !== defectiveNum;
 
-                return (
-                  <div key={line} className={disabled ? "bg-gray-50 dark:bg-gray-900/40" : isEditing ? "bg-amber-50/60 dark:bg-amber-900/10" : ""}>
-                    <div className="grid grid-cols-2 md:grid-cols-[110px_1fr_1fr_1fr_1fr_90px] gap-2 px-3 py-2 items-center">
-                      <div className="col-span-2 md:col-span-1 flex flex-wrap items-center gap-1.5">
-                        <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{line}</span>
-                        {disabled && (
-                          <>
-                            <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full px-2 py-0.5 whitespace-nowrap">
-                              Already saved
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => startEdit(line)}
-                              className="text-[11px] text-blue-600 dark:text-blue-400 underline whitespace-nowrap"
-                            >
-                              Edit
-                            </button>
-                          </>
-                        )}
-                        {isEditing && (
-                          <>
-                            <span className="text-[10px] bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 rounded-full px-2 py-0.5 whitespace-nowrap">
-                              Editing
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => cancelEdit(line)}
-                              className="text-[11px] text-gray-500 dark:text-gray-400 underline whitespace-nowrap"
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        )}
-                      </div>
+                    // Keep the status simple: a line is either already
+                    // "Saved" on the server, or it's an unsaved "Draft" —
+                    // no separate Editing/Unlocked states shown to the user.
+                    let statusBadge = null;
+                    if (hasExisting) {
+                      statusBadge = (
+                        <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full px-2 py-0.5 whitespace-nowrap">
+                          Saved
+                        </span>
+                      );
+                    } else if (isDraft) {
+                      statusBadge = (
+                        <span className="text-[10px] bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 rounded-full px-2 py-0.5 whitespace-nowrap">
+                          Draft
+                        </span>
+                      );
+                    }
 
-                      <input
-                        type="number" min="0" placeholder="Inspected"
-                        value={row.inspectedQty} disabled={disabled}
-                        onChange={(e) => updateRow(line, "inspectedQty", e.target.value)}
-                        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                      />
-                      <input
-                        type="number" min="0" placeholder="Passed"
-                        value={row.passedQty} disabled={disabled}
-                        onChange={(e) => updateRow(line, "passedQty", e.target.value)}
-                        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                      />
-                      <input
-                        type="number" min="0" placeholder="Defective"
-                        value={row.defectivePcs} disabled={disabled}
-                        onChange={(e) => updateRow(line, "defectivePcs", e.target.value)}
-                        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                      />
-                      <input
-                        type="number" min="0" placeholder="After Repair"
-                        value={row.afterRepair} disabled={disabled}
-                        onChange={(e) => updateRow(line, "afterRepair", e.target.value)}
-                        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                      />
+                    const rowBg = disabled
+                      ? "bg-gray-50 dark:bg-gray-900/40"
+                      : isDraft
+                      ? "bg-violet-50/50 dark:bg-violet-900/10"
+                      : "";
 
-                      <button
-                        type="button"
-                        disabled={disabled}
-                        onClick={() => setExpandedLine(isExpanded ? null : line)}
-                        className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50 whitespace-nowrap"
-                      >
-                        {row.selectedDefects.length > 0 ? `${row.selectedDefects.length} defect(s)` : "+ Defect"}
-                      </button>
-                    </div>
-
-                    {isExpanded && !disabled && (
-                      <div className="px-3 pb-3 pt-0 md:pl-[122px]">
-                        <div className="rounded-md border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 p-2 space-y-2">
-                          <SearchableDefectPicker
-                            options={defectOptions}
-                            onSelect={(name) => addDefect(line, name)}
-                          />
-                          {row.selectedDefects.length > 0 && (
-                            <div className="space-y-1">
-                              {row.selectedDefects.map((d, i) => (
-                                <div key={`${d.name}-${i}`} className="flex items-center gap-2 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1">
-                                  <span className="flex-1 truncate text-xs font-medium text-gray-800 dark:text-gray-200">{d.name}</span>
-                                  <input
-                                    type="number" min="0" placeholder="Qty" value={d.quantity}
-                                    onChange={(e) => changeDefectQty(line, i, e.target.value)}
-                                    className="w-16 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-1 py-0.5 text-xs"
-                                  />
-                                  <button
-                                    type="button" onClick={() => removeDefect(line, i)}
-                                    className="rounded border border-gray-300 dark:border-gray-600 px-2 py-0.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                                  >×</button>
-                                </div>
-                              ))}
+                    return (
+                      <tr key={line} className={rowBg}>
+                        <td className="px-4 py-2.5 align-top">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">{line}</span>
+                            <div className="flex items-center gap-1.5">
+                              {statusBadge}
+                              {disabled && (
+                                <button
+                                  type="button"
+                                  onClick={() => startEdit(line)}
+                                  className="text-[11px] text-blue-600 dark:text-blue-400 underline whitespace-nowrap"
+                                >
+                                  Edit
+                                </button>
+                              )}
+                              {isEditing && (
+                                <button
+                                  type="button"
+                                  onClick={() => cancelEdit(line)}
+                                  className="text-[11px] text-gray-500 dark:text-gray-400 underline whitespace-nowrap"
+                                >
+                                  Cancel
+                                </button>
+                              )}
                             </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2.5 align-top">
+                          <input
+                            type="number" min="0" value={row.inspectedQty} disabled={disabled}
+                            onChange={(e) => updateRow(line, "inspectedQty", e.target.value)}
+                            className="w-24 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          />
+                        </td>
+                        <td className="px-4 py-2.5 align-top">
+                          <input
+                            type="number" min="0" value={row.passedQty} disabled={disabled}
+                            onChange={(e) => updateRow(line, "passedQty", e.target.value)}
+                            className="w-24 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          />
+                        </td>
+                        <td className="px-4 py-2.5 align-top">
+                          <input
+                            type="number" min="0" value={row.defectivePcs} disabled={disabled}
+                            onChange={(e) => updateRow(line, "defectivePcs", e.target.value)}
+                            className={`w-24 rounded-md border px-2 py-1.5 text-sm disabled:opacity-50 focus:outline-none focus:ring-2 ${
+                              qtyMismatch
+                                ? "border-red-400 dark:border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 focus:ring-red-400"
+                                : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:ring-emerald-400"
+                            }`}
+                          />
+                          {qtyMismatch && (
+                            <span className="mt-1 block text-[10px] text-red-600 dark:text-red-400 whitespace-nowrap">
+                              Should be {expectedDefective}
+                            </span>
                           )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                        </td>
+                        <td className="px-4 py-2.5 align-top">
+                          <input
+                            type="number" min="0" value={row.afterRepair} disabled={disabled}
+                            onChange={(e) => updateRow(line, "afterRepair", e.target.value)}
+                            className="w-24 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                          />
+                        </td>
+                        {/* Defects — right side column, always visible, no click needed to see it */}
+                        <td className="px-4 py-2.5 align-top">
+                          <div className="min-w-[360px] max-w-[440px] space-y-1.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                                {row.selectedDefects.length > 0
+                                  ? `${row.selectedDefects.length} defect${row.selectedDefects.length > 1 ? "s" : ""}`
+                                  : "No defects added"}
+                              </span>
+                              <span className="text-[11px] font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                Total: {defectTotal} pcs
+                              </span>
+                            </div>
+
+                            {!disabled && (
+                              <SearchableDefectPicker
+                                options={defectOptions}
+                                onSelect={(name) => addDefect(line, name)}
+                              />
+                            )}
+
+                            {row.selectedDefects.length > 0 && (
+                              <div className="max-h-32 space-y-1 overflow-auto pr-1">
+                                {row.selectedDefects.map((d, i) =>
+                                  disabled ? (
+                                    <div key={`${d.name}-${i}`} className="flex items-center gap-2 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1">
+                                      <span className="flex-1 truncate text-xs font-medium text-gray-800 dark:text-gray-200">{d.name}</span>
+                                      <span className="text-xs text-gray-500 dark:text-gray-400">Qty: {d.quantity || 0}</span>
+                                    </div>
+                                  ) : (
+                                    <div key={`${d.name}-${i}`} className="flex items-center gap-2 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1">
+                                      <span className="flex-1 truncate text-xs font-medium text-gray-800 dark:text-gray-200">{d.name}</span>
+                                      <input
+                                        type="number" min="0" placeholder="Qty" value={d.quantity}
+                                        onChange={(e) => changeDefectQty(line, i, e.target.value)}
+                                        className="w-16 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-1 py-0.5 text-xs"
+                                      />
+                                      <button
+                                        type="button" onClick={() => removeDefect(line, i)}
+                                        className="rounded border border-gray-300 dark:border-gray-600 px-2 py-0.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                                      >×</button>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
         )}

@@ -287,6 +287,16 @@ export default function EndlineDashboard() {
   const setField = (field, value) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
+  // Inspected - Passed should equal Defective Pcs. Used to flag the field
+  // in red when the three numbers don't reconcile — same rule as the bulk
+  // hour-entry page.
+  const formQtyHasData =
+    form.inspectedQty !== "" || form.passedQty !== "" || form.defectivePcs !== "";
+  const formExpectedDefective =
+    Number(form.inspectedQty || 0) - Number(form.passedQty || 0);
+  const formQtyMismatch =
+    formQtyHasData && formExpectedDefective !== Number(form.defectivePcs || 0);
+
   const resetForm = useCallback(() => {
     setForm({
       reportDate: "",
@@ -724,20 +734,33 @@ export default function EndlineDashboard() {
                   { label: "Passed Qty", field: "passedQty" },
                   { label: "Defective Pcs", field: "defectivePcs" },
                   { label: "After Repair", field: "afterRepair" },
-                ].map(({ label, field }) => (
-                  <div key={field}>
-                    <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">
-                      {label}
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={form[field]}
-                      onChange={(e) => setField(field, e.target.value)}
-                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                    />
-                  </div>
-                ))}
+                ].map(({ label, field }) => {
+                  const isDefectiveField = field === "defectivePcs";
+                  const mismatched = isDefectiveField && formQtyMismatch;
+                  return (
+                    <div key={field}>
+                      <label className="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">
+                        {label}
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={form[field]}
+                        onChange={(e) => setField(field, e.target.value)}
+                        className={`w-full rounded-md border px-2 py-1.5 text-sm focus:outline-none focus:ring-2 ${
+                          mismatched
+                            ? "border-red-400 dark:border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 focus:ring-red-400"
+                            : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-emerald-400"
+                        }`}
+                      />
+                      {mismatched && (
+                        <span className="mt-1 block text-[10px] text-red-600 dark:text-red-400">
+                          Should be {formExpectedDefective} (Inspected - Passed)
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Submit */}
@@ -909,7 +932,16 @@ export default function EndlineDashboard() {
                                   <span className="text-gray-500 dark:text-gray-400">
                                     Def.Pcs:
                                   </span>{" "}
-                                  {r.defectivePcs}
+                                  <span
+                                    className={
+                                      (r.inspectedQty || 0) - (r.passedQty || 0) !==
+                                      (r.defectivePcs || 0)
+                                        ? "font-semibold text-red-600 dark:text-red-400"
+                                        : ""
+                                    }
+                                  >
+                                    {r.defectivePcs}
+                                  </span>
                                 </div>
                                 <div>
                                   <span className="text-gray-500 dark:text-gray-400">
