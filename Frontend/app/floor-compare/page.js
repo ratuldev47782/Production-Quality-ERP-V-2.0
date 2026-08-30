@@ -19,7 +19,7 @@ const groupByOptions = [
   { value: "building", label: "Floor-wise" },
   { value: "segment",  label: "Line + Buyer + Style" },
 ];
-const LINES = Array.from({ length: 15 }, (_, i) => `Line-${i + 1}`);
+const LINES = Array.from({ length: 30 }, (_, i) => `Line-${i + 1}`);
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 function todayIso()      { return new Date().toISOString().slice(0, 10); }

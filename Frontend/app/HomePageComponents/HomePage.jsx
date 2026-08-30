@@ -419,7 +419,7 @@ export default function HomePage() {
             w-full
           ">
             <Image
-              src="/ChatGPT_Image_Mar_17__2026__09_57_46_AM-removebg-preview.png"
+              src="/Building_Image.jpeg"
               alt="Factory"
               fill
               sizes="(max-width: 768px) 100vw, 50vw"

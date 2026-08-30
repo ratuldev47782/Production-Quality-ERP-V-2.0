@@ -31,6 +31,17 @@ const lineOptions = [
   "Line-17",
   "Line-18",
   "Line-19",
+  "Line-20",
+  "Line-21",
+  "Line-22",
+  "Line-23",
+  "Line-24",
+  "Line-25",
+  "Line-26",
+  "Line-27",
+  "Line-28",
+  "Line-29",
+  "Line-30",
 ];
 
 const buildingOptions = [
