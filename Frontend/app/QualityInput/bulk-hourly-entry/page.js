@@ -1,3 +1,4 @@
+// BulkHourEntryForm.jsx
 "use client";
 
 import { useAuth } from "@/app/hooks/useAuth";
@@ -28,7 +29,12 @@ const defectOptions = [
   "362 - SCESSIOR CUT","363 - PEN MARK","364 - BRUSH PROBLEM","365 - NICKEL OUT","366 - COATING PROBLEM",
 ];
 
-const lineOptions = Array.from({ length: 30 }, (_, i) => `Line-${i + 1}`);
+const lineOptions = [
+  "Line-1","Line-2","Line-3","Line-4","Line-5","Line-6","Line-7","Line-8",
+  "Line-9","Line-10","Line-11","Line-12","Line-13","Line-14","Line-15","Line-16",
+  "Line-17","Line-18","Line-19","Line-20","Line-21","Line-22","Line-23","Line-24",
+  "Line-25","Line-26","Line-27","Line-28","Line-29","Line-30",
+];
 
 function todayKeyDhaka() {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -51,11 +57,10 @@ function getUserIdFromAuth(auth) {
   return auth?.user?.id || auth?.user?._id || auth?.id || auth?._id || null;
 }
 
-function emptyRow() {
-  return { _id: null, inspectedQty: "", passedQty: "", defectivePcs: "", afterRepair: "", selectedDefects: [] };
-}
+const emptyRow = () => ({
+  inspectedQty: "", passedQty: "", defectivePcs: "", afterRepair: "", selectedDefects: [],
+});
 
-// row-এ অন্তত একটা field-এ কিছু লেখা আছে কিনা
 function rowHasData(row) {
   if (!row) return false;
   return (
@@ -67,78 +72,62 @@ function rowHasData(row) {
   );
 }
 
-// save হওয়ার জন্য ৪টা core field সবগুলোই থাকতে হবে
-function rowIsComplete(row) {
-  return (
-    !!row &&
-    row.inspectedQty !== "" &&
-    row.passedQty !== "" &&
-    row.defectivePcs !== "" &&
-    row.afterRepair !== ""
-  );
-}
+function SearchableDefectPicker({ options, onSelect, placeholder = "Search defect by name..." }) {
+  const [query, setQuery] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [hi, setHi] = React.useState(0);
 
-// ---------- Defect picker (reused, same as single-entry page) ----------
-function SearchableDefectPicker({ options, onSelect, excludeNames = [], placeholder = "Search defect by name..." }) {
-  const [query, setQuery] = useState("");
-  const [open, setOpen] = useState(false);
-  const [hi, setHi] = useState(0);
-  const inputRef = React.useRef(null);
-
-  const filtered = useMemo(() => {
+  const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase();
-    const pool = options.filter((o) => !excludeNames.includes(o));
-    if (!q) return pool.slice(0, 50);
-    return pool.filter((o) => o.toLowerCase().includes(q)).slice(0, 50);
-  }, [query, options, excludeNames]);
+    if (!q) return options.slice(0, 50);
+    return options.filter((o) => o.toLowerCase().includes(q)).slice(0, 50);
+  }, [query, options]);
 
-  useEffect(() => { setHi(0); }, [query, open]);
+  React.useEffect(() => { setHi(0); }, [query, open]);
 
-  const selectValue = (val) => {
-    onSelect(val);
-    setQuery("");
-    setHi(0);
-    // dropdown খোলাই থাকবে — একের পর এক defect select করা যাবে, ক্লিক করে আবার খোলার দরকার নেই
-    inputRef.current?.focus();
-  };
+  const selectValue = (val) => { onSelect(val); setQuery(""); setOpen(false); };
 
   return (
     <div className="relative">
       <input
-        ref={inputRef}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setOpen(true)}
-        onClick={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 120)}
         onKeyDown={(e) => {
           if (!open && (e.key === "ArrowDown" || e.key === "Enter")) setOpen(true);
           if (!filtered.length) return;
           if (e.key === "ArrowDown") { e.preventDefault(); setHi((i) => Math.min(i + 1, filtered.length - 1)); }
           if (e.key === "ArrowUp") { e.preventDefault(); setHi((i) => Math.max(i - 1, 0)); }
-          if (e.key === "Enter") { e.preventDefault(); if (filtered[hi]) selectValue(filtered[hi]); }
+          if (e.key === "Enter") { e.preventDefault(); selectValue(filtered[hi]); }
           if (e.key === "Escape") setOpen(false);
         }}
-        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1 text-xs placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-400"
         placeholder={placeholder}
+        role="combobox"
+        aria-expanded={open}
+        aria-autocomplete="list"
       />
       {open && (
-        <div className="absolute z-30 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-lg">
+        <div className="absolute z-30 mt-1 max-h-52 w-full overflow-auto rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-lg">
           {filtered.length ? (
             filtered.map((opt, idx) => (
               <button
-                type="button" key={opt}
+                type="button"
+                key={opt}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => selectValue(opt)}
-                className={`block w-full text-left px-2 py-1.5 text-sm ${
+                className={`block w-full text-left px-2 py-1.5 text-xs ${
                   idx === hi
                     ? "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300"
                     : "text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
                 }`}
-              >{opt}</button>
+              >
+                {opt}
+              </button>
             ))
           ) : (
-            <div className="px-2 py-2 text-sm text-gray-500 dark:text-gray-400">No results</div>
+            <div className="px-2 py-2 text-xs text-gray-500 dark:text-gray-400">No results</div>
           )}
         </div>
       )}
@@ -146,124 +135,39 @@ function SearchableDefectPicker({ options, onSelect, excludeNames = [], placehol
   );
 }
 
-// ---------- Defects cell — lives directly inside the table row, no popup ----------
-function InlineDefectsCell({ line, defects, onAdd, onUpdateQty, onRemove }) {
-  return (
-    <div className="min-w-[340px] max-w-[420px]">
-      <SearchableDefectPicker
-        options={defectOptions}
-        excludeNames={defects.map((d) => d.name)}
-        placeholder="Defect search & select..."
-        onSelect={(name) => onAdd(line, name)}
-      />
-      {defects.length > 0 && (
-        <div className="mt-1.5 max-h-32 space-y-1 overflow-auto pr-1">
-          {defects.map((d, i) => (
-            <div
-              key={`${d.name}-${i}`}
-              className="flex items-center gap-1.5 rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-1.5 py-1"
-            >
-              <span className="flex-1 truncate text-[11px] font-medium text-gray-800 dark:text-gray-200">{d.name}</span>
-              <input
-                type="number" min="0" placeholder="Qty" value={d.quantity}
-                onChange={(e) => onUpdateQty(line, i, e.target.value)}
-                className="w-12 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-1 py-0.5 text-[11px]"
-              />
-              <button
-                type="button" onClick={() => onRemove(line, i)}
-                className="rounded border border-gray-300 dark:border-gray-600 px-1.5 py-0.5 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-              >×</button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// একটা hour-এর জন্য rows বানায়: আগে থেকে save করা লাইনগুলো পপুলেট করে, তারপর draft থাকলে সেটা override করে
-function buildRowsForHour(hourVal, existingEntries, draftForHour) {
-  const base = Object.fromEntries(lineOptions.map((l) => [l, emptyRow()]));
-  if (!hourVal) return base;
-
-  existingEntries
-    .filter((e) => e.hourLabel === hourVal)
-    .forEach((entry) => {
-      if (!entry.line) return;
-      base[entry.line] = {
-        _id: entry._id,
-        inspectedQty: entry.inspectedQty === undefined || entry.inspectedQty === null ? "" : String(entry.inspectedQty),
-        passedQty: entry.passedQty === undefined || entry.passedQty === null ? "" : String(entry.passedQty),
-        defectivePcs: entry.defectivePcs === undefined || entry.defectivePcs === null ? "" : String(entry.defectivePcs),
-        afterRepair: entry.afterRepair === undefined || entry.afterRepair === null ? "" : String(entry.afterRepair),
-        selectedDefects: Array.isArray(entry.selectedDefects)
-          ? entry.selectedDefects.map((d) => ({ name: d.name || "", quantity: String(d.quantity ?? "") }))
-          : [],
-      };
-    });
-
-  if (draftForHour) {
-    for (const line of lineOptions) {
-      if (draftForHour[line]) base[line] = draftForHour[line];
-    }
-  }
-
-  return base;
-}
-
-export default function BulkHourlyEntryPage() {
+export default function BulkHourEntryForm() {
   const { auth } = useAuth();
   const userId = useMemo(() => getUserIdFromAuth(auth), [auth]);
   const building = useMemo(() => auth?.assigned_building || auth?.building || "", [auth]);
   const factory = useMemo(() => auth?.factory || auth?.assigned_factory || "", [auth]);
 
   const [selectedDate, setSelectedDate] = useState(() => todayKeyDhaka());
-  const [hour, setHour] = useState("");
-  const [rowsByLine, setRowsByLine] = useState(() =>
-    Object.fromEntries(lineOptions.map((l) => [l, emptyRow()]))
-  );
-  const [existingEntries, setExistingEntries] = useState([]); // already-saved entries for selectedDate
+  const selectedDateLabel = useMemo(() => dateKeyToLabel(selectedDate), [selectedDate]);
+  const [selectedHour, setSelectedHour] = useState("");
+
+  const [rowsMap, setRowsMap] = useState({});
+  // existingRows: { [line]: fullSavedDocFromServer } — the whole doc (incl.
+  // _id) so an unlocked line can be PATCHed back with the right id.
+  const [existingRows, setExistingRows] = useState({});
+  // editingLines: lines the user has explicitly unlocked via "Edit" — these
+  // stay locked-looking (badge) but their inputs become editable and Save
+  // routes them through PATCH instead of the bulk-create POST.
+  const [editingLines, setEditingLines] = useState(new Set());
+  const [expandedLine, setExpandedLine] = useState(null);
+
   const [loadingExisting, setLoadingExisting] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [toast, setToast] = useState(null);
-
-  // draft object shape: { [hourLabel]: { [line]: rowObject } }
-  const draftAllRef = React.useRef({});
-
-  const draftStorageKey = useMemo(
-    () => `bulk-hourly-draft:${factory || "f"}:${building || "b"}:${selectedDate}`,
-    [factory, building, selectedDate]
-  );
+  const [saving, setSaving] = useState(false);
+  const [toastState, setToastState] = useState(null);
 
   const showToast = (message, type = "info") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 4000);
+    setToastState({ message, type });
+    setTimeout(() => setToastState(null), 5000);
   };
 
-  const persistDraft = useCallback(() => {
-    try {
-      localStorage.setItem(draftStorageKey, JSON.stringify(draftAllRef.current));
-    } catch {
-      // storage full / disabled — silently ignore, form still works in-memory
-    }
-  }, [draftStorageKey]);
-
-  // ---- date বদলালে draft (সব hour-এর) লোড হবে, hour রিসেট হবে ----
-  useEffect(() => {
-    let stored = {};
-    try {
-      const raw = localStorage.getItem(draftStorageKey);
-      if (raw) stored = JSON.parse(raw) || {};
-    } catch {
-      stored = {};
-    }
-    draftAllRef.current = stored;
-    setHour("");
-    setRowsByLine(Object.fromEntries(lineOptions.map((l) => [l, emptyRow()])));
-  }, [draftStorageKey]);
-
-  // ---- fetch already-saved entries for this date ----
-  const fetchExisting = useCallback(async () => {
+  // Load which lines already have an entry for this date + hour, so we can
+  // mark/lock them and avoid duplicate-key round trips.
+  const loadExistingForHour = useCallback(async () => {
+    if (!auth || !selectedHour) { setExistingRows({}); return; }
     try {
       setLoadingExisting(true);
       let url = `/api/hourly-inspections?date=${encodeURIComponent(selectedDate)}&limit=500`;
@@ -272,160 +176,139 @@ export default function BulkHourlyEntryPage() {
       if (factory) url += `&factory=${encodeURIComponent(factory)}`;
       const res = await fetch(url, { cache: "no-store" });
       const json = await res.json();
-      if (!res.ok) throw new Error(json?.message || "Failed to load existing entries");
-      setExistingEntries(json?.data || []);
-    } catch (e) {
-      showToast(e.message || "Load error", "error");
+      if (res.ok) {
+        const map = {};
+        (json.data || [])
+          .filter((r) => r.hourLabel === selectedHour)
+          .forEach((r) => { map[r.line] = r; });
+        setExistingRows(map);
+      }
+    } catch {
+      // non-fatal — worst case a line shows as not-yet-saved until refresh
     } finally {
       setLoadingExisting(false);
     }
-  }, [selectedDate, userId, building, factory]);
+  }, [auth, selectedDate, selectedHour, userId, building, factory]);
 
   useEffect(() => {
-    if (!auth) return;
-    fetchExisting();
-  }, [auth, fetchExisting]);
+    loadExistingForHour();
+  }, [loadExistingForHour]);
 
-  // ---- hour বদলালে বা existingEntries রিফ্রেশ হলে rows আবার বানাও (saved data + draft merge) ----
+  // Switching hour or date starts a fresh sheet — previous unsaved inputs
+  // belonged to a different hour/date and shouldn't silently carry over.
   useEffect(() => {
-    if (!hour) {
-      setRowsByLine(Object.fromEntries(lineOptions.map((l) => [l, emptyRow()])));
-      return;
-    }
-    setRowsByLine(buildRowsForHour(hour, existingEntries, draftAllRef.current[hour]));
-  }, [hour, existingEntries]);
+    setRowsMap({});
+    setExpandedLine(null);
+    setEditingLines(new Set());
+  }, [selectedDate, selectedHour]);
 
-  // ---- প্রতিটা পরিবর্তনেই draft অটোসেভ ----
-  useEffect(() => {
-    if (!hour) return;
-    const hasAnyData = Object.values(rowsByLine).some(rowHasData);
-    if (hasAnyData) {
-      draftAllRef.current = { ...draftAllRef.current, [hour]: rowsByLine };
-    } else {
-      const next = { ...draftAllRef.current };
-      delete next[hour];
-      draftAllRef.current = next;
-    }
-    persistDraft();
-  }, [rowsByLine, hour, persistDraft]);
+  // Unlock an already-saved line: prefill the row with its saved values so
+  // editing starts from what's on the server, not a blank input.
+  const startEdit = (line) => {
+    const existing = existingRows[line];
+    if (!existing) return;
+    setEditingLines((prev) => new Set(prev).add(line));
+    setRowsMap((prev) => ({
+      ...prev,
+      [line]: {
+        inspectedQty: String(existing.inspectedQty ?? ""),
+        passedQty: String(existing.passedQty ?? ""),
+        defectivePcs: String(existing.defectivePcs ?? ""),
+        afterRepair: String(existing.afterRepair ?? ""),
+        selectedDefects: Array.isArray(existing.selectedDefects)
+          ? existing.selectedDefects.map((d) => ({ name: d.name, quantity: String(d.quantity ?? "") }))
+          : [],
+      },
+    }));
+  };
+
+  // Re-lock a line without saving — discards whatever was typed since Edit.
+  const cancelEdit = (line) => {
+    setEditingLines((prev) => { const next = new Set(prev); next.delete(line); return next; });
+    setRowsMap((prev) => { const next = { ...prev }; delete next[line]; return next; });
+    setExpandedLine((prev) => (prev === line ? null : prev));
+  };
 
   const updateRow = (line, field, value) => {
-    setRowsByLine((prev) => {
-      const current = prev[line] || emptyRow();
-      const next = { ...current, [field]: value };
-      // Inspected/Passed বদলালে Defective Pcs অটো ক্যালকুলেট হবে
-      if (field === "inspectedQty" || field === "passedQty") {
-        const insp = Number(next.inspectedQty);
-        const pass = Number(next.passedQty);
-        if (next.inspectedQty !== "" && next.passedQty !== "" && Number.isFinite(insp) && Number.isFinite(pass)) {
-          next.defectivePcs = String(Math.max(insp - pass, 0));
-        }
-      }
-      return { ...prev, [line]: next };
-    });
+    setRowsMap((prev) => ({
+      ...prev,
+      [line]: { ...emptyRow(), ...prev[line], [field]: value },
+    }));
   };
 
-  const addDefect = (line, name) => {
-    if (!name) return;
-    setRowsByLine((prev) => {
-      const current = prev[line] || emptyRow();
-      if (current.selectedDefects.some((d) => d.name === name)) return prev;
-      return {
-        ...prev,
-        [line]: { ...current, selectedDefects: [...current.selectedDefects, { name, quantity: "" }] },
-      };
-    });
-  };
-
-  const updateDefectQty = (line, idx, value) => {
-    setRowsByLine((prev) => {
-      const current = prev[line] || emptyRow();
-      const nextDefects = [...current.selectedDefects];
-      nextDefects[idx] = { ...nextDefects[idx], quantity: value };
-      return { ...prev, [line]: { ...current, selectedDefects: nextDefects } };
+  const addDefect = (line, defectName) => {
+    if (!defectName) return;
+    setRowsMap((prev) => {
+      const row = { ...emptyRow(), ...prev[line] };
+      if (row.selectedDefects.some((d) => d.name === defectName)) return prev;
+      return { ...prev, [line]: { ...row, selectedDefects: [...row.selectedDefects, { name: defectName, quantity: "" }] } };
     });
   };
 
   const removeDefect = (line, idx) => {
-    setRowsByLine((prev) => {
-      const current = prev[line] || emptyRow();
-      return {
-        ...prev,
-        [line]: { ...current, selectedDefects: current.selectedDefects.filter((_, i) => i !== idx) },
-      };
+    setRowsMap((prev) => {
+      const row = { ...emptyRow(), ...prev[line] };
+      const nextDefects = row.selectedDefects.filter((_, i) => i !== idx);
+      return { ...prev, [line]: { ...row, selectedDefects: nextDefects } };
     });
   };
 
-  // Inspected/Passed/Defective Pcs তিনটাই থাকলে, মিলছে কিনা চেক
-  const isRowInvalid = (row) => {
-    if (row.inspectedQty === "" || row.passedQty === "" || row.defectivePcs === "") return false;
-    const expected = Number(row.inspectedQty) - Number(row.passedQty);
-    return Number(row.defectivePcs) !== expected;
+  const changeDefectQty = (line, idx, value) => {
+    setRowsMap((prev) => {
+      const row = { ...emptyRow(), ...prev[line] };
+      const nextDefects = row.selectedDefects.map((d, i) => (i === idx ? { ...d, quantity: value } : d));
+      return { ...prev, [line]: { ...row, selectedDefects: nextDefects } };
+    });
   };
 
-  // ready: ৪টা field-ই পূর্ণ এবং হিসাব মিলছে -> submit হবে
-  const readyLines = useMemo(
-    () => lineOptions.filter((l) => rowIsComplete(rowsByLine[l]) && !isRowInvalid(rowsByLine[l])),
-    [rowsByLine]
-  );
-  // incomplete: কিছু data আছে কিন্তু ৪টা field পূর্ণ না
-  const incompleteLines = useMemo(
-    () => lineOptions.filter((l) => rowHasData(rowsByLine[l]) && !rowIsComplete(rowsByLine[l])),
-    [rowsByLine]
-  );
-  // mismatch: ৪টা field পূর্ণ কিন্তু Defective Pcs হিসাব মিলছে না
-  const mismatchLines = useMemo(
-    () => lineOptions.filter((l) => rowIsComplete(rowsByLine[l]) && isRowInvalid(rowsByLine[l])),
-    [rowsByLine]
-  );
-
-  const toCreateCount = useMemo(
-    () => readyLines.filter((l) => !rowsByLine[l]._id).length,
-    [readyLines, rowsByLine]
-  );
-  const toUpdateCount = readyLines.length - toCreateCount;
-
-  const resetAll = () => {
-    const next = { ...draftAllRef.current };
-    delete next[hour];
-    draftAllRef.current = next;
-    persistDraft();
-    setRowsByLine(buildRowsForHour(hour, existingEntries, null));
+  const buildPayload = (line) => {
+    const row = { ...emptyRow(), ...rowsMap[line] };
+    return {
+      hour: selectedHour,
+      line,
+      inspectedQty: Number(row.inspectedQty || 0),
+      passedQty: Number(row.passedQty || 0),
+      defectivePcs: Number(row.defectivePcs || 0),
+      afterRepair: Number(row.afterRepair || 0),
+      selectedDefects: row.selectedDefects.map((d) => ({ name: d.name, quantity: Number(d.quantity || 0) })),
+    };
   };
 
-  const submitAll = async () => {
-    if (!hour) return showToast("Working Hour সিলেক্ট করুন।", "error");
-    if (!userId) return showToast("Missing user identity (auth).", "error");
-    if (!building) return showToast("Building information missing. আবার login করুন।", "error");
-    if (!factory) return showToast("Factory information missing. আবার login করুন।", "error");
-    if (readyLines.length === 0) {
-      return showToast("অন্তত একটা Line-এ চারটা field (Inspected, Passed, Defective Pcs, After Repair) পূরণ করুন।", "error");
+  // A line counts toward "filled" if it has data AND we're actually going
+  // to submit it — either it's brand new, or it's an existing line the user
+  // deliberately unlocked via Edit.
+  const filledCount = useMemo(
+    () =>
+      lineOptions.filter(
+        (line) => rowHasData(rowsMap[line]) && (!existingRows[line] || editingLines.has(line))
+      ).length,
+    [rowsMap, existingRows, editingLines]
+  );
+
+  const saveAll = async () => {
+    if (!selectedHour) { showToast("Please select an hour first.", "error"); return; }
+    if (!userId) { showToast("Missing user identity (auth).", "error"); return; }
+    if (!building) { showToast("Building information is missing. Please login again.", "error"); return; }
+    if (!factory) { showToast("Factory information is missing. Please login again.", "error"); return; }
+
+    const linesToCreate = lineOptions.filter((line) => rowHasData(rowsMap[line]) && !existingRows[line]);
+    const linesToUpdate = lineOptions.filter((line) => rowHasData(rowsMap[line]) && editingLines.has(line));
+
+    if (linesToCreate.length === 0 && linesToUpdate.length === 0) {
+      showToast("Please enter data for at least one line before saving.", "error");
+      return;
     }
 
-    const toCreate = readyLines.filter((l) => !rowsByLine[l]._id);
-    const toUpdate = readyLines.filter((l) => rowsByLine[l]._id);
-
     try {
-      setSubmitting(true);
+      setSaving(true);
+      let createdCount = 0;
+      let createFailed = [];
+      let updatedCount = 0;
+      let updateFailed = [];
 
-      if (toCreate.length > 0) {
-        const entries = toCreate.map((line) => {
-          const row = rowsByLine[line];
-          return {
-            hour,
-            line,
-            building,
-            factory,
-            inspectedQty: Number(row.inspectedQty || 0),
-            passedQty: Number(row.passedQty || 0),
-            defectivePcs: Number(row.defectivePcs || 0),
-            afterRepair: Number(row.afterRepair || 0),
-            selectedDefects: (row.selectedDefects || []).map((d) => ({
-              name: d.name,
-              quantity: Number(d.quantity || 0),
-            })),
-          };
-        });
+      // New lines — one bulk POST.
+      if (linesToCreate.length > 0) {
+        const entries = linesToCreate.map((line) => buildPayload(line));
         const res = await fetch("/api/hourly-inspections", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -439,258 +322,290 @@ export default function BulkHourlyEntryPage() {
           }),
         });
         const json = await res.json();
-        if (!res.ok) throw new Error(json?.message || "নতুন entry create করতে ব্যর্থ হয়েছে।");
+        if (!res.ok && !json.success) throw new Error(json.message || "Failed to save new entries.");
+
+        const failedLines = new Set((json.failed || []).map((f) => f.line));
+        createFailed = [...failedLines];
+        const savedLines = linesToCreate.filter((line) => !failedLines.has(line));
+        createdCount = savedLines.length;
+
+        const savedDocsByLine = {};
+        (json.data || []).forEach((doc) => { savedDocsByLine[doc.line] = doc; });
+
+        setRowsMap((prev) => {
+          const next = { ...prev };
+          savedLines.forEach((line) => { delete next[line]; });
+          return next;
+        });
+        setExistingRows((prev) => {
+          const next = { ...prev };
+          savedLines.forEach((line) => { if (savedDocsByLine[line]) next[line] = savedDocsByLine[line]; });
+          return next;
+        });
       }
 
-      if (toUpdate.length > 0) {
-        const updateResults = await Promise.all(
-          toUpdate.map(async (line) => {
-            const row = rowsByLine[line];
-            const url = `/api/hourly-inspections?id=${row._id}${factory ? `&factory=${encodeURIComponent(factory)}` : ""}`;
+      // Unlocked/edited lines — PATCH one at a time (each needs its own _id).
+      if (linesToUpdate.length > 0) {
+        const results = await Promise.allSettled(
+          linesToUpdate.map(async (line) => {
+            const id = existingRows[line]?._id;
+            if (!id) throw new Error(`Missing id for ${line}`);
+            const payload = { ...buildPayload(line), building, factory, reportDate: selectedDate };
+            const url = `/api/hourly-inspections?id=${id}${factory ? `&factory=${encodeURIComponent(factory)}` : ""}`;
             const res = await fetch(url, {
               method: "PATCH",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                hour,
-                line,
-                building,
-                factory,
-                inspectedQty: Number(row.inspectedQty || 0),
-                passedQty: Number(row.passedQty || 0),
-                defectivePcs: Number(row.defectivePcs || 0),
-                afterRepair: Number(row.afterRepair || 0),
-                selectedDefects: (row.selectedDefects || []).map((d) => ({
-                  name: d.name,
-                  quantity: Number(d.quantity || 0),
-                })),
-              }),
+              body: JSON.stringify(payload),
             });
             const json = await res.json();
-            if (!res.ok) throw new Error(json?.message || `${line} আপডেট করতে ব্যর্থ হয়েছে।`);
-            return json;
+            if (!res.ok) throw new Error(json.message || `Failed to update ${line}`);
+            return { line, data: json.data };
           })
         );
-        void updateResults;
+
+        results.forEach((r, idx) => {
+          const line = linesToUpdate[idx];
+          if (r.status === "fulfilled") {
+            updatedCount += 1;
+            setRowsMap((prev) => { const next = { ...prev }; delete next[line]; return next; });
+            setEditingLines((prev) => { const next = new Set(prev); next.delete(line); return next; });
+            setExistingRows((prev) => ({ ...prev, [line]: r.value.data }));
+          } else {
+            updateFailed.push(line);
+          }
+        });
       }
 
-      showToast(
-        `${toCreate.length} টা নতুন + ${toUpdate.length} টা আপডেট — সফলভাবে save হয়েছে!`,
-        "success"
-      );
+      const totalSaved = createdCount + updatedCount;
+      const totalFailed = createFailed.length + updateFailed.length;
 
-      const next = { ...draftAllRef.current };
-      delete next[hour];
-      draftAllRef.current = next;
-      persistDraft();
-
-      await fetchExisting();
+      if (totalFailed > 0) {
+        showToast(
+          `Saved ${totalSaved} line(s) for ${selectedHour}. ${totalFailed} failed — ${[...createFailed, ...updateFailed].join(", ")}.`,
+          "info"
+        );
+      } else {
+        showToast(`Saved ${totalSaved} line(s) for ${selectedHour}, ${selectedDateLabel}.`, "success");
+      }
     } catch (e) {
       showToast(e.message || "Save failed", "error");
     } finally {
-      setSubmitting(false);
+      setSaving(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {toast && (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      {toastState && (
         <div className="fixed right-4 top-4 z-50">
-          <div className={`flex items-start gap-2 rounded-lg border px-4 py-3 shadow-lg ${
-            toast.type === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300"
-            : toast.type === "error" ? "border-red-200 bg-red-50 text-red-800 dark:border-red-700 dark:bg-red-900/60 dark:text-red-300"
+          <div className={`flex items-start gap-2 rounded-lg border px-4 py-3 shadow-lg max-w-sm ${
+            toastState.type === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300"
+            : toastState.type === "error" ? "border-red-200 bg-red-50 text-red-800 dark:border-red-700 dark:bg-red-900/60 dark:text-red-300"
             : "border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-700 dark:bg-blue-900/60 dark:text-blue-300"}`}>
-            <span className="text-lg">{toast.type === "success" ? "✅" : toast.type === "error" ? "⚠️" : "ℹ️"}</span>
-            <p className="text-sm font-medium">{toast.message}</p>
-            <button onClick={() => setToast(null)} className="ml-2 text-xs opacity-70 hover:opacity-100">✕</button>
+            <span className="text-lg">{toastState.type === "success" ? "✅" : toastState.type === "error" ? "⚠️" : "ℹ️"}</span>
+            <div className="text-sm"><p className="font-medium">{toastState.message}</p></div>
+            <button type="button" onClick={() => setToastState(null)} className="ml-2 text-xs opacity-70 hover:opacity-100">✕</button>
           </div>
         </div>
       )}
 
-      <div className="mx-auto max-w-[1800px] p-4 md:p-6">
-        {/* Header */}
-        <div className="mb-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-950 overflow-hidden">
+      <div className="mx-auto max-w-5xl p-4 md:p-6">
+        {/* Header / controls */}
+        <div className="card bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl overflow-hidden mb-4">
           <div className="h-[3px] bg-gradient-to-r from-emerald-500 to-sky-500" />
-          <div className="px-4 py-3 flex flex-wrap items-center gap-4">
+          <div className="px-4 py-3 flex flex-wrap items-end gap-4">
             <div className="flex flex-col gap-1.5">
-              <span className="text-[10px] uppercase tracking-wide text-slate-400">Date</span>
-              <input
-                type="date" value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-2.5 py-1.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-emerald-400"
-              />
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">{dateKeyToLabel(selectedDate)}</span>
+              <span className="text-[10px] uppercase tracking-wide text-slate-400 dark:text-slate-500">Date</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-2.5 py-1.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setSelectedDate(todayKeyDhaka())}
+                  className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1.5 text-[12px] hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors whitespace-nowrap"
+                >
+                  Today
+                </button>
+              </div>
+              <span className="text-[11px] bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 rounded-full px-2.5 py-0.5 w-fit">
+                {selectedDateLabel}
+              </span>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <span className="text-[10px] uppercase tracking-wide text-slate-400">Working Hour</span>
+              <span className="text-[10px] uppercase tracking-wide text-slate-400 dark:text-slate-500">Hour (applies to all lines)</span>
               <select
-                value={hour} onChange={(e) => setHour(e.target.value)}
-                className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-2.5 py-1.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                value={selectedHour}
+                onChange={(e) => setSelectedHour(e.target.value)}
+                className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-2.5 py-1.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-emerald-400 min-w-[160px]"
               >
                 <option value="">Select Hour</option>
                 {hourOptions.map((h) => <option key={h} value={h}>{h}</option>)}
               </select>
             </div>
 
-            <div className="flex-1 min-w-[180px]">
-              <h1 className="text-[17px] font-semibold text-slate-900 dark:text-slate-100">Bulk Hourly Entry (Excel style)</h1>
-              <div className="mt-1 flex flex-wrap gap-1.5">
-                {factory && <span className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-md px-2 py-1">Factory <b>{factory}</b></span>}
-                {building && <span className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-md px-2 py-1">Floor <b>{building}</b></span>}
-                <span className="text-[11px] bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-md px-2 py-1">
-                  Draft auto-saving ✓
+            <div className="flex flex-col gap-1.5 flex-1 min-w-[180px]">
+              <span className="text-[10px] uppercase tracking-wide text-slate-400 dark:text-slate-500 font-semibold">Bulk Hour Entry</span>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[11px] bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 rounded-md px-2.5 py-1 font-semibold">
+                  {auth?.user_name || "User"}
                 </span>
-                <span className="text-[11px] bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-md px-2 py-1">
-                  Saved entries editable ✓
-                </span>
+                {factory && (
+                  <span className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-md px-2.5 py-1">
+                    Factory <strong className="text-slate-800 dark:text-slate-200 font-semibold">{factory}</strong>
+                  </span>
+                )}
+                {building && (
+                  <span className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-md px-2.5 py-1">
+                    Floor <strong className="text-slate-800 dark:text-slate-200 font-semibold">{building}</strong>
+                  </span>
+                )}
+                {loadingExisting && (
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500">Checking existing entries…</span>
+                )}
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={saveAll}
+              disabled={!selectedHour || saving || filledCount === 0}
+              className="rounded-md bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {saving ? "Saving..." : `Save All${filledCount ? ` (${filledCount})` : ""}`}
+            </button>
           </div>
         </div>
 
-        {!hour && (
-          <div className="mb-4 rounded-md border border-dashed border-gray-300 dark:border-gray-600 p-4 text-sm text-gray-500 dark:text-gray-400">
-            আগে উপরে থেকে <b>Working Hour</b> সিলেক্ট করুন, তারপর নিচের টেবিলে সব Line-এর ডাটা দিন।
+        {!selectedHour ? (
+          <div className="rounded border border-dashed border-gray-300 dark:border-gray-600 p-8 text-center text-sm text-gray-500 dark:text-gray-400">
+            Select an hour above to start entering data for all lines.
           </div>
-        )}
-
-        {hour && (
+        ) : (
           <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[1400px] text-sm">
-                <thead className="bg-gray-50 dark:bg-gray-900/50 text-xs uppercase text-gray-500 dark:text-gray-400">
-                  <tr>
-                    <th className="px-4 py-3 text-left w-28">Line</th>
-                    <th className="px-4 py-3 text-left w-32">Inspected</th>
-                    <th className="px-4 py-3 text-left w-32">Passed</th>
-                    <th className="px-4 py-3 text-left w-40">Defective Pcs</th>
-                    <th className="px-4 py-3 text-left w-32">After Repair</th>
-                    <th className="px-4 py-3 text-left">Defects</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                  {lineOptions.map((line) => {
-                    const row = rowsByLine[line] || emptyRow();
-                    const isSaved = !!row._id;
-                    const complete = rowIsComplete(row);
-                    const invalid = isRowInvalid(row);
-                    const partial = rowHasData(row) && !complete;
-                    return (
-                      <tr
-                        key={line}
-                        className={
-                          invalid
-                            ? "bg-red-50 dark:bg-red-900/20"
-                            : partial
-                            ? "bg-amber-50/60 dark:bg-amber-900/10"
-                            : complete
-                            ? isSaved
-                              ? "bg-sky-50/60 dark:bg-sky-900/10"
-                              : "bg-emerald-50/40 dark:bg-emerald-900/10"
-                            : ""
-                        }
-                      >
-                        <td className="px-4 py-2.5 font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap align-top">
-                          {line}
-                          {isSaved && (
-                            <span className="ml-2 rounded bg-sky-200 dark:bg-sky-800 px-1.5 py-0.5 text-[10px] text-sky-800 dark:text-sky-200">
-                              Saved
-                            </span>
-                          )}
-                          {partial && (
-                            <span className="ml-2 rounded bg-amber-200 dark:bg-amber-800 px-1.5 py-0.5 text-[10px] text-amber-800 dark:text-amber-200">
-                              Incomplete
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-2.5 align-top">
-                          <input
-                            type="number" min="0" value={row.inspectedQty}
-                            onChange={(e) => updateRow(line, "inspectedQty", e.target.value)}
-                            className="w-24 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm"
-                          />
-                        </td>
-                        <td className="px-4 py-2.5 align-top">
-                          <input
-                            type="number" min="0" value={row.passedQty}
-                            onChange={(e) => updateRow(line, "passedQty", e.target.value)}
-                            className="w-24 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm"
-                          />
-                        </td>
-                        <td className="px-4 py-2.5 align-top">
-                          <input
-                            type="number" min="0" value={row.defectivePcs}
-                            onChange={(e) => updateRow(line, "defectivePcs", e.target.value)}
-                            className={`w-24 rounded border px-2 py-1.5 text-sm ${
-                              invalid
-                                ? "border-red-400 dark:border-red-600 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300"
-                                : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                            }`}
-                          />
-                          {invalid && (
-                            <div className="mt-0.5 text-[10px] text-red-600 dark:text-red-400">
-                              হবে {Number(row.inspectedQty) - Number(row.passedQty)}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-4 py-2.5 align-top">
-                          <input
-                            type="number" min="0" value={row.afterRepair}
-                            onChange={(e) => updateRow(line, "afterRepair", e.target.value)}
-                            className="w-24 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm"
-                          />
-                        </td>
-                        <td className="px-4 py-2.5 align-top">
-                          <InlineDefectsCell
-                            line={line}
-                            defects={row.selectedDefects || []}
-                            onAdd={addDefect}
-                            onUpdateQty={updateDefectQty}
-                            onRemove={removeDefect}
-                          />
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            {/* Column headers (desktop) */}
+            <div className="hidden md:grid grid-cols-[110px_1fr_1fr_1fr_1fr_90px] gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40">
+              <div>Line</div>
+              <div>Inspected</div>
+              <div>Passed</div>
+              <div>Defective</div>
+              <div>After Repair</div>
+              <div>Defects</div>
             </div>
 
-            {(incompleteLines.length > 0 || mismatchLines.length > 0) && (
-              <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-2.5 space-y-1">
-                {incompleteLines.length > 0 && (
-                  <p className="text-xs text-amber-700 dark:text-amber-400">
-                    <b>এন্ট্রি বাকি আছে</b> ({incompleteLines.length}): {incompleteLines.join(", ")} — ৪টা field (Inspected, Passed, Defective Pcs, After Repair) পূরণ না হলে save হবে না।
-                  </p>
-                )}
-                {mismatchLines.length > 0 && (
-                  <p className="text-xs text-red-600 dark:text-red-400">
-                    <b>হিসাব মিলছে না</b> ({mismatchLines.length}): {mismatchLines.join(", ")} — Defective Pcs = Inspected − Passed হতে হবে।
-                  </p>
-                )}
-              </div>
-            )}
+            <div className="divide-y divide-gray-100 dark:divide-gray-700">
+              {lineOptions.map((line) => {
+                const row = { ...emptyRow(), ...rowsMap[line] };
+                const hasExisting = !!existingRows[line];
+                const isEditing = editingLines.has(line);
+                const disabled = hasExisting && !isEditing;
+                const isExpanded = expandedLine === line;
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 dark:border-gray-700 px-4 py-3">
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                {loadingExisting
-                  ? "Loading saved entries..."
-                  : `${toCreateCount} নতুন + ${toUpdateCount} আপডেট = ${readyLines.length} line ready to upload`}
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button" onClick={resetAll}
-                  className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
-                >
-                  Reset This Hour
-                </button>
-                <button
-                  type="button" onClick={submitAll} disabled={submitting || readyLines.length === 0}
-                  className="rounded-md bg-emerald-600 hover:bg-emerald-700 px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
-                >
-                  {submitting ? "Uploading..." : `Upload All (${readyLines.length})`}
-                </button>
-              </div>
+                return (
+                  <div key={line} className={disabled ? "bg-gray-50 dark:bg-gray-900/40" : isEditing ? "bg-amber-50/60 dark:bg-amber-900/10" : ""}>
+                    <div className="grid grid-cols-2 md:grid-cols-[110px_1fr_1fr_1fr_1fr_90px] gap-2 px-3 py-2 items-center">
+                      <div className="col-span-2 md:col-span-1 flex flex-wrap items-center gap-1.5">
+                        <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{line}</span>
+                        {disabled && (
+                          <>
+                            <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full px-2 py-0.5 whitespace-nowrap">
+                              Already saved
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => startEdit(line)}
+                              className="text-[11px] text-blue-600 dark:text-blue-400 underline whitespace-nowrap"
+                            >
+                              Edit
+                            </button>
+                          </>
+                        )}
+                        {isEditing && (
+                          <>
+                            <span className="text-[10px] bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 rounded-full px-2 py-0.5 whitespace-nowrap">
+                              Editing
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => cancelEdit(line)}
+                              className="text-[11px] text-gray-500 dark:text-gray-400 underline whitespace-nowrap"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        )}
+                      </div>
+
+                      <input
+                        type="number" min="0" placeholder="Inspected"
+                        value={row.inspectedQty} disabled={disabled}
+                        onChange={(e) => updateRow(line, "inspectedQty", e.target.value)}
+                        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                      />
+                      <input
+                        type="number" min="0" placeholder="Passed"
+                        value={row.passedQty} disabled={disabled}
+                        onChange={(e) => updateRow(line, "passedQty", e.target.value)}
+                        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                      />
+                      <input
+                        type="number" min="0" placeholder="Defective"
+                        value={row.defectivePcs} disabled={disabled}
+                        onChange={(e) => updateRow(line, "defectivePcs", e.target.value)}
+                        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                      />
+                      <input
+                        type="number" min="0" placeholder="After Repair"
+                        value={row.afterRepair} disabled={disabled}
+                        onChange={(e) => updateRow(line, "afterRepair", e.target.value)}
+                        className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-2 py-1.5 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                      />
+
+                      <button
+                        type="button"
+                        disabled={disabled}
+                        onClick={() => setExpandedLine(isExpanded ? null : line)}
+                        className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {row.selectedDefects.length > 0 ? `${row.selectedDefects.length} defect(s)` : "+ Defect"}
+                      </button>
+                    </div>
+
+                    {isExpanded && !disabled && (
+                      <div className="px-3 pb-3 pt-0 md:pl-[122px]">
+                        <div className="rounded-md border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40 p-2 space-y-2">
+                          <SearchableDefectPicker
+                            options={defectOptions}
+                            onSelect={(name) => addDefect(line, name)}
+                          />
+                          {row.selectedDefects.length > 0 && (
+                            <div className="space-y-1">
+                              {row.selectedDefects.map((d, i) => (
+                                <div key={`${d.name}-${i}`} className="flex items-center gap-2 rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1">
+                                  <span className="flex-1 truncate text-xs font-medium text-gray-800 dark:text-gray-200">{d.name}</span>
+                                  <input
+                                    type="number" min="0" placeholder="Qty" value={d.quantity}
+                                    onChange={(e) => changeDefectQty(line, i, e.target.value)}
+                                    className="w-16 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-1 py-0.5 text-xs"
+                                  />
+                                  <button
+                                    type="button" onClick={() => removeDefect(line, i)}
+                                    className="rounded border border-gray-300 dark:border-gray-600 px-2 py-0.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                                  >×</button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

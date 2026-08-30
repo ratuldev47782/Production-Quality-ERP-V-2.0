@@ -3,9 +3,40 @@ import { dbConnect } from "@/services/mongo";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
+// ── Timezone-safe "start of day" ────────────────────────────────────────────
+// The client always sends a plain "YYYY-MM-DD" calendar-date string (computed
+// in Asia/Dhaka on the frontend). We must NOT run that through any local-
+// timezone conversion, because the server's timezone (UTC on most hosts,
+// but not guaranteed — VPS TZ env vars, serverless cold starts, etc.) can
+// make the same date string resolve to different calendar days depending on
+// when/where the request runs. That mismatch between save-time and
+// query-time was causing two different dates to collide onto the same
+// stored date-range, so a date's saved entries would "leak" into another
+// date's results.
+//
+// Fix: parse the Y/M/D digits directly out of the string and anchor them to
+// UTC midnight. This is 100% deterministic — it never touches the server's
+// local timezone, so save and query always agree with each other regardless
+// of where/when the process runs.
 function startOfDay(dateLike) {
-  const d = dateLike ? new Date(dateLike) : new Date();
-  return new Date(d.toDateString());
+  if (!dateLike) {
+    const now = new Date();
+    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  }
+
+  if (typeof dateLike === "string") {
+    const match = dateLike.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      const [, y, m, d] = match;
+      return new Date(Date.UTC(Number(y), Number(m) - 1, Number(d)));
+    }
+  }
+
+  // Fallback for Date objects / other formats — anchor using UTC fields,
+  // never local-timezone fields (getFullYear/getMonth/getDate would
+  // reintroduce the same bug).
+  const d = new Date(dateLike);
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
 }
 
 function toNumber(n, def = 0) {
@@ -55,13 +86,14 @@ function normalizeEntry(raw) {
     factory,
   };
 
-  console.log("normalizeEntry input:", raw);
-  console.log("normalizeEntry output:", doc);
-
   return doc;
 }
 
 // ---------- POST ----------
+// Accepts either a single entry (body.entry / a flat body) or a bulk array
+// via body.entries / body.hours. Bulk hour-entry (one hour, many lines) is
+// the main use case this batches for: the caller sends every filled-in line
+// as a separate entry in `entries`, all sharing the same reportDate.
 
 export async function POST(req) {
   try {
@@ -100,6 +132,12 @@ export async function POST(req) {
         { status: 400 }
       );
     }
+    if (!body.reportDate) {
+      return NextResponse.json(
+        { success: false, message: "reportDate is required." },
+        { status: 400 }
+      );
+    }
 
     const reportDate = startOfDay(body.reportDate);
 
@@ -108,10 +146,6 @@ export async function POST(req) {
     else if (Array.isArray(body.hours)) rawEntries = body.hours;
     else if (body.entry) rawEntries = [body.entry];
     else rawEntries = [body];
-
-    console.log("Raw entries received:", JSON.stringify(rawEntries, null, 2));
-    console.log("Building from body:", building);
-    console.log("Factory from body:", factory);
 
     if (!rawEntries || rawEntries.length === 0) {
       return NextResponse.json(
@@ -130,17 +164,8 @@ export async function POST(req) {
       reportDate,
     }));
 
-    console.log(
-      "Normalized docs before validation:",
-      JSON.stringify(docs, null, 2)
-    );
-
     for (const d of docs) {
       if (!d.hourLabel || !d.hourIndex || d.hourIndex < 1 || d.hourIndex > 24) {
-        console.error(
-          "Validation failed: Missing or invalid hourLabel/hourIndex",
-          d
-        );
         return NextResponse.json(
           {
             success: false,
@@ -150,30 +175,24 @@ export async function POST(req) {
         );
       }
       if (!d.factory) {
-        console.error("Validation failed: Missing factory", d);
         return NextResponse.json(
           { success: false, message: "Factory is required for each entry." },
           { status: 400 }
         );
       }
       if (!d.building) {
-        console.error("Validation failed: Missing building", d);
         return NextResponse.json(
           { success: false, message: "Building is required for each entry." },
           { status: 400 }
         );
       }
       if (!d.line) {
-        console.error("Validation failed: Missing line", d);
         return NextResponse.json(
           { success: false, message: "Line is required for each entry." },
           { status: 400 }
         );
       }
     }
-
-    console.log("Attempting to insert docs:", JSON.stringify(docs, null, 2));
-    console.log("Number of docs to insert:", docs.length);
 
     if (docs.length === 0) {
       return NextResponse.json(
@@ -182,32 +201,15 @@ export async function POST(req) {
       );
     }
 
-    // Final simple required field check
-    for (const doc of docs) {
-      if (!doc.hourLabel || !doc.line || !doc.building || !doc.factory) {
-        console.error("Missing required fields in doc:", doc);
-        return NextResponse.json(
-          {
-            success: false,
-            message: `Missing required fields: hourLabel, line, building, or factory`,
-          },
-          { status: 400 }
-        );
-      }
-    }
-
     let inserted;
     try {
+      // ordered: false — this matters for bulk hour-entry. When a user
+      // fills every line for an hour and one line was already saved
+      // earlier, we still want the other 29 lines to insert instead of
+      // the whole batch stopping at the first duplicate-key error.
       inserted = await HourlyInspectionModel.insertMany(docs, {
-        ordered: true,
+        ordered: false,
       });
-      console.log("Successfully inserted:", inserted.length, "entries");
-      if (inserted.length > 0) {
-        console.log(
-          "Inserted data sample:",
-          JSON.stringify(inserted[0], null, 2)
-        );
-      }
     } catch (insertError) {
       console.error("insertMany error:", insertError);
 
@@ -224,31 +226,55 @@ export async function POST(req) {
         );
       }
 
-      if (insertError.code === 11000) {
-        const duplicateField = insertError.keyPattern
-          ? Object.keys(insertError.keyPattern).join(", ")
-          : "unknown field";
+      // Single-doc duplicate key error (no writeErrors array — happens when
+      // there was only one doc in the batch, e.g. single-entry save).
+      if (insertError.code === 11000 && !insertError.writeErrors) {
         return NextResponse.json(
           {
             success: false,
-            message: `An entry already exists for this combination (${duplicateField}). Please edit the existing entry instead.`,
+            message:
+              "An entry already exists for this combination (line/hour/date). Please edit the existing entry instead.",
           },
           { status: 409 }
         );
       }
 
+      // Bulk (unordered) write errors — some docs succeeded, some failed.
+      // Map each failure back to its line/hour so the client can tell the
+      // user exactly which lines were skipped and why.
       if (insertError.writeErrors && Array.isArray(insertError.writeErrors)) {
-        const errorMessages = insertError.writeErrors
-          .map((e) => e.errmsg || e.err?.message || JSON.stringify(e.err))
-          .join("; ");
+        const failedIndexes = new Set();
+        const failedDetails = insertError.writeErrors.map((e) => {
+          const idx = e.index ?? e.err?.index ?? -1;
+          failedIndexes.add(idx);
+          const failedDoc = docs[idx];
+          const code = e.code ?? e.err?.code;
+          const isDup = code === 11000;
+          return {
+            index: idx,
+            line: failedDoc?.line,
+            hourLabel: failedDoc?.hourLabel,
+            reason: isDup ? "duplicate" : "error",
+            message: isDup
+              ? `${failedDoc?.line || "This line"} already has an entry for ${failedDoc?.hourLabel || "this hour"}.`
+              : e.errmsg || e.err?.errmsg || "Failed to save this line.",
+          };
+        });
 
-        if (insertError.insertedDocs && insertError.insertedDocs.length > 0) {
+        const insertedDocs = insertError.insertedDocs || inserted || [];
+
+        if (insertedDocs.length > 0) {
           return NextResponse.json(
             {
               success: true,
-              count: insertError.insertedDocs.length,
-              data: insertError.insertedDocs,
-              message: `Some entries created, but some failed: ${errorMessages}`,
+              partial: failedDetails.length > 0,
+              count: insertedDocs.length,
+              data: insertedDocs,
+              failed: failedDetails,
+              message:
+                failedDetails.length > 0
+                  ? `Saved ${insertedDocs.length} of ${docs.length} entries. ${failedDetails.length} were skipped (already existed).`
+                  : "Hourly inspection entries created.",
             },
             { status: 201 }
           );
@@ -257,7 +283,10 @@ export async function POST(req) {
         return NextResponse.json(
           {
             success: false,
-            message: `Failed to insert entries: ${errorMessages}`,
+            failed: failedDetails,
+            message: `Failed to insert entries: ${failedDetails
+              .map((f) => f.message)
+              .join(" ")}`,
           },
           { status: 400 }
         );
@@ -360,7 +389,7 @@ export async function GET(req) {
     if (date) {
       const dayStart = startOfDay(date);
       const dayEnd = new Date(dayStart);
-      dayEnd.setDate(dayEnd.getDate() + 1);
+      dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
       filter.reportDate = { $gte: dayStart, $lt: dayEnd };
     }
     if (building) {
@@ -429,7 +458,22 @@ export async function PATCH(req) {
       0
     );
 
-    const filter = { _id: id };
+    // ── reportDate guard ────────────────────────────────────────────────
+    // Without this, PATCH will happily update ANY document that matches
+    // {_id, factory} — regardless of which date it actually belongs to.
+    // If the client ever attaches a stale/wrong _id to a row (date-switch
+    // race condition, cached state, etc.), this was silently corrupting
+    // the WRONG date's entry. Requiring reportDate in the filter turns
+    // that into a loud 404 instead of a silent cross-date write.
+    if (!body.reportDate) {
+      return NextResponse.json(
+        { success: false, message: "reportDate is required for update." },
+        { status: 400 }
+      );
+    }
+    const reportDate = startOfDay(body.reportDate);
+
+    const filter = { _id: id, reportDate };
     if (factory) filter.factory = factory;
 
     const updated = await HourlyInspectionModel.findOneAndUpdate(
@@ -444,17 +488,13 @@ export async function PATCH(req) {
 
     if (!updated) {
       return NextResponse.json(
-        { success: false, message: "Entry not found" },
+        { success: false, message: "Entry not found for this date (id/date mismatch)." },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      {
-        success: true,
-        data: updated,
-        message: "Entry updated successfully",
-      },
+      { success: true, data: updated, message: "Entry updated successfully" },
       { status: 200 }
     );
   } catch (err) {
@@ -465,7 +505,6 @@ export async function PATCH(req) {
     );
   }
 }
-
 // ---------- DELETE ----------
 export async function DELETE(req) {
   try {
@@ -510,4 +549,3 @@ export async function DELETE(req) {
     );
   }
 }
-
