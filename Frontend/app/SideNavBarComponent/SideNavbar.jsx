@@ -102,6 +102,7 @@ const ICON_COLORS = {
   Quality: "text-rose-400",
   "Quality Input": "text-rose-400",
   "Quality Summary Table": "text-pink-400",
+  "Bulk Hourly Entry": "text-pink-400",
   "Style Media Register": "text-cyan-400",
   "Maintenance Department": "text-green-400",
   "Machine Inventory": "text-green-400",
@@ -151,6 +152,14 @@ const NAV_GROUPS = [
         label: "Quality Summary Table",
         href: "/QualitySummaryTable",
         icon: Table2,
+      },
+      {
+        label: "Bulk Hourly Entry",
+        href: "/QualityInput/bulk-hourly-entry",
+        icon: ClipboardList,
+        // Only enabled for Data tracker users whose trackerType is "Quality" —
+        // everyone else (including Management/Developer/Others) sees it disabled.
+        restrictedToQualityTracker: true,
       },
     ],
   },
@@ -295,6 +304,16 @@ export default function SideNavbar() {
       e.preventDefault();
       router.push("/login");
     }
+  }
+
+  // ── per-child access check ──────────────────────────────────────────────
+  // Most children just inherit the parent group's access. Some children can
+  // opt into a stricter rule (e.g. Bulk Hourly Entry: only Quality data tracker).
+  function isChildAllowed(child, groupAllowed) {
+    if (child.restrictedToQualityTracker) {
+      return userRole === "Data tracker" && trackerType === "Quality";
+    }
+    return groupAllowed;
   }
 
   function fadeSlide(show) {
@@ -479,43 +498,55 @@ export default function SideNavbar() {
               >
                 <div className="ml-3 pl-3 border-l border-slate-700/50 dark:border-slate-700/70 mt-0.5 mb-1 space-y-0.5">
                   {navGroup.children.map((child) => {
-  const childActive =
-    pathname === child.href ||
-    pathname.startsWith(child.href + "/");
+                    const childActive =
+                      pathname === child.href ||
+                      pathname.startsWith(child.href + "/");
 
-  const handleChildClick = (e) => {
-    handleProtectedClick(e, navGroup.group);
-    if (child.external) {
-      e.preventDefault();
-      window.location.href = child.href;
-    }
-  };
+                    // per-child access — some children (e.g. Bulk Hourly Entry)
+                    // are restricted even for roles that pass the group check.
+                    const childAllowed = isChildAllowed(child, allowed);
 
-  return (
-    <Link
-      key={child.href}
-      href={child.external ? "#" : child.href}
-      onClick={handleChildClick}
-      className={[
-        "flex items-center gap-2 h-8 rounded-lg px-2 transition-all duration-150",
-        childActive
-          ? "bg-sky-500/20 dark:bg-sky-500/25 text-sky-300 dark:text-sky-300 font-extrabold"
-          : "text-slate-400 dark:text-slate-400 hover:text-slate-100 dark:hover:text-slate-100 hover:bg-slate-800/60 dark:hover:bg-slate-800/50 font-bold",
-      ].join(" ")}
-    >
-      <NavIcon
-        icon={child.icon}
-        label={child.label}
-        size={13}
-        className="opacity-90"
-      />
-      <span className="text-[11px] whitespace-nowrap">
-        {child.label}
-      </span>
-      {childActive && <ActiveDot />}
-    </Link>
-  );
-})}
+                    const handleChildClick = (e) => {
+                      if (!childAllowed) {
+                        e.preventDefault();
+                        return;
+                      }
+                      handleProtectedClick(e, navGroup.group);
+                      if (child.external) {
+                        e.preventDefault();
+                        window.location.href = child.href;
+                      }
+                    };
+
+                    return (
+                      <Link
+                        key={child.href}
+                        href={child.external ? "#" : child.href}
+                        onClick={handleChildClick}
+                        aria-disabled={!childAllowed}
+                        tabIndex={childAllowed ? 0 : -1}
+                        className={[
+                          "flex items-center gap-2 h-8 rounded-lg px-2 transition-all duration-150",
+                          !childAllowed
+                            ? "text-slate-600 dark:text-slate-600 opacity-40 cursor-default pointer-events-none"
+                            : childActive
+                              ? "bg-sky-500/20 dark:bg-sky-500/25 text-sky-300 dark:text-sky-300 font-extrabold"
+                              : "text-slate-400 dark:text-slate-400 hover:text-slate-100 dark:hover:text-slate-100 hover:bg-slate-800/60 dark:hover:bg-slate-800/50 font-bold",
+                        ].join(" ")}
+                      >
+                        <NavIcon
+                          icon={child.icon}
+                          label={child.label}
+                          size={13}
+                          className="opacity-90"
+                        />
+                        <span className="text-[11px] whitespace-nowrap">
+                          {child.label}
+                        </span>
+                        {childActive && childAllowed && <ActiveDot />}
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             </div>
