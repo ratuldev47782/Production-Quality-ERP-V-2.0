@@ -57,8 +57,16 @@ export default function QualityTable() {
     }
     try {
       setLoading(true); setError("");
-      const dateIso = new Date(selectedDate + "T00:00:00").toISOString();
-      let url = `/api/hourly-inspections?date=${encodeURIComponent(dateIso)}&limit=1000`;
+      // IMPORTANT: send the plain "YYYY-MM-DD" string as-is — do NOT run it
+      // through `new Date(...).toISOString()` first. selectedDate is already
+      // a calendar-date string (e.g. from a <input type="date">), and
+      // converting it via a local-timezone Date object shifts the day
+      // boundary by the browser's UTC offset (in Dhaka, UTC+6, this pushes
+      // the date back by one calendar day). The API's startOfDay() already
+      // parses a plain "YYYY-MM-DD" string deterministically in UTC, so
+      // passing it straight through is both simpler and correct — this is
+      // exactly what caused "30th's data shows under the 31st" here.
+      let url = `/api/hourly-inspections?date=${encodeURIComponent(selectedDate)}&limit=1000`;
       url += `&building=${encodeURIComponent(building)}`;
       url += `&factory=${encodeURIComponent(factory)}`;
       const res  = await fetch(url, { cache: "no-store" });

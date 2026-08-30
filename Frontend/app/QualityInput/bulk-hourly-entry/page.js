@@ -2,7 +2,7 @@
 "use client";
 
 import { useAuth } from "@/app/hooks/useAuth";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const hourOptions = [
   "1st Hour","2nd Hour","3rd Hour","4th Hour","5th Hour","6th Hour",
@@ -51,6 +51,10 @@ function dateKeyToLabel(dateKey) {
   return new Date(`${dateKey}T00:00:00`).toLocaleDateString(undefined, {
     weekday: "short", month: "short", day: "numeric", year: "numeric",
   });
+}
+
+function draftKeyFor({ date, hour, building, factory }) {
+  return `bulkHourDraft:${factory || "nf"}:${building || "nb"}:${date}:${hour}`;
 }
 
 function getUserIdFromAuth(auth) {
@@ -194,13 +198,70 @@ export default function BulkHourEntryForm() {
     loadExistingForHour();
   }, [loadExistingForHour]);
 
-  // Switching hour or date starts a fresh sheet — previous unsaved inputs
-  // belonged to a different hour/date and shouldn't silently carry over.
+  // draftKeyRef tracks which localStorage key the *current* rowsMap belongs
+  // to, so the persist effect below never writes a freshly-typed row under
+  // the previous hour/date's key.
+  const draftKeyRef = useRef(null);
+
+  // Switching hour or date starts a fresh sheet, but first check localStorage
+  // for a draft matching this exact date+hour+building+factory — if the page
+  // got refreshed before Save was clicked, restore whatever was typed.
   useEffect(() => {
-    setRowsMap({});
     setExpandedLine(null);
-    setEditingLines(new Set());
-  }, [selectedDate, selectedHour]);
+
+    if (!selectedHour) {
+      draftKeyRef.current = null;
+      setRowsMap({});
+      setEditingLines(new Set());
+      return;
+    }
+
+    const key = draftKeyFor({ date: selectedDate, hour: selectedHour, building, factory });
+    draftKeyRef.current = key;
+
+    let restored = {};
+    try {
+      const raw = typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") restored = parsed;
+      }
+    } catch {
+      // corrupt/blocked storage — just start with a blank sheet
+    }
+
+    setRowsMap(restored);
+    const restoredLines = Object.keys(restored);
+    if (restoredLines.length > 0) {
+      // If any of these lines turn out to already exist on the server
+      // (loaded separately by loadExistingForHour), treat them as "being
+      // edited" rather than locked — the user had unsaved changes on them
+      // before the refresh, so Save should PATCH, not silently discard.
+      setEditingLines(new Set(restoredLines));
+      showToast(`Restored unsaved draft for ${selectedHour}, ${dateKeyToLabel(selectedDate)}.`, "info");
+    } else {
+      setEditingLines(new Set());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, selectedHour, building, factory]);
+
+  // Persist every keystroke to localStorage under the current draft key, so
+  // an accidental refresh/tab-close before Save doesn't lose typed data.
+  // Best-effort: if storage is unavailable (private browsing, quota), we
+  // silently skip rather than interrupt typing.
+  useEffect(() => {
+    const key = draftKeyRef.current;
+    if (!key || typeof window === "undefined") return;
+    try {
+      if (Object.keys(rowsMap).length === 0) {
+        window.localStorage.removeItem(key);
+      } else {
+        window.localStorage.setItem(key, JSON.stringify(rowsMap));
+      }
+    } catch {
+      // ignore — draft persistence is a convenience, not a requirement
+    }
+  }, [rowsMap]);
 
   // Unlock an already-saved line: prefill the row with its saved values so
   // editing starts from what's on the server, not a blank input.
