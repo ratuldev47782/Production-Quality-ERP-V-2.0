@@ -6,10 +6,10 @@ import {
   Activity,
   AlertTriangle,
   Gauge,
+  LayoutGrid,
+  Monitor,
   TrendingDown,
   TrendingUp,
-  Monitor,
-  LayoutGrid,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
