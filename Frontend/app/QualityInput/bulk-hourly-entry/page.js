@@ -76,6 +76,20 @@ function rowHasData(row) {
   );
 }
 
+// Normalize a saved server doc into the same shape the form uses internally.
+function snapshotFromExisting(existing) {
+  if (!existing) return null;
+  return {
+    inspectedQty: String(existing.inspectedQty ?? ""),
+    passedQty: String(existing.passedQty ?? ""),
+    defectivePcs: String(existing.defectivePcs ?? ""),
+    afterRepair: String(existing.afterRepair ?? ""),
+    selectedDefects: Array.isArray(existing.selectedDefects)
+      ? existing.selectedDefects.map((d) => ({ name: d.name, quantity: String(d.quantity ?? "") }))
+      : [],
+  };
+}
+
 function SearchableDefectPicker({ options, onSelect, placeholder = "Search defect by name..." }) {
   const [query, setQuery] = React.useState("");
   const [open, setOpen] = React.useState(false);
@@ -270,15 +284,7 @@ export default function BulkHourEntryForm() {
   const startEdit = (line) => {
     const existing = existingRows[line];
     if (!existing) return;
-    const snapshot = {
-      inspectedQty: String(existing.inspectedQty ?? ""),
-      passedQty: String(existing.passedQty ?? ""),
-      defectivePcs: String(existing.defectivePcs ?? ""),
-      afterRepair: String(existing.afterRepair ?? ""),
-      selectedDefects: Array.isArray(existing.selectedDefects)
-        ? existing.selectedDefects.map((d) => ({ name: d.name, quantity: String(d.quantity ?? "") }))
-        : [],
-    };
+    const snapshot = snapshotFromExisting(existing);
     setEditingLines((prev) => new Set(prev).add(line));
     setEditBaselines((prev) => ({ ...prev, [line]: snapshot }));
     setRowsMap((prev) => ({ ...prev, [line]: snapshot }));
@@ -573,10 +579,19 @@ export default function BulkHourEntryForm() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {lineOptions.map((line) => {
-                    const row = { ...emptyRow(), ...rowsMap[line] };
                     const hasExisting = !!existingRows[line];
                     const isEditing = editingLines.has(line);
                     const disabled = hasExisting && !isEditing;
+
+                    // FIX: when a line is disabled (already-saved and not
+                    // yet unlocked via Edit), show its saved values from
+                    // existingRows instead of the empty rowsMap entry —
+                    // previously rowsMap[line] was undefined here, so the
+                    // disabled inputs rendered blank until "Edit" was clicked.
+                    const row = disabled
+                      ? { ...emptyRow(), ...snapshotFromExisting(existingRows[line]) }
+                      : { ...emptyRow(), ...rowsMap[line] };
+
                     const isDraft = !hasExisting && rowHasData(row);
                     const defectTotal = row.selectedDefects.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0);
 
