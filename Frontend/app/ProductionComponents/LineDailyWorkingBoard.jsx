@@ -497,6 +497,11 @@ function HourlyHeaderCard({ header, auth, privileged }) {
 
   const [cycleStartDate, setCycleStartDate] = useState(null);
 
+  // Tracks whether the user has manually picked an hour from the dropdown
+  // since the last auto-advance. If true, the auto-advance effect will not
+  // override their manual choice.
+  const userPickedHourRef = useRef(false);
+
   const productionUserId =
     auth?.user?.id || auth?.user?._id || auth?.id || auth?._id || "";
   const factory =
@@ -552,6 +557,7 @@ function HourlyHeaderCard({ header, auth, privileged }) {
     setWipInfo(null);
     setCycleStartDate(null);
     setDayInput("");
+    userPickedHourRef.current = false;
   }, [header?._id]);
 
   const buildRecordParams = () => {
@@ -590,6 +596,30 @@ function HourlyHeaderCard({ header, auth, privileged }) {
     return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [header?._id, productionUserId, privileged]);
+
+  // ── Auto-advance selected hour after a record is saved/loaded ──
+  // This effect only reacts when `hourlyRecords` changes (i.e. right after
+  // the initial fetch, or right after handleSave() refreshes the list).
+  // It never fires on manual dropdown selection, since selecting an hour
+  // only calls setSelectedHour and does not touch hourlyRecords.
+  useEffect(() => {
+    if (editingRecordId) return; // don't fight the "edit last hour" flow
+    if (userPickedHourRef.current) return; // respect manual selection
+
+    if (!hourlyRecords || hourlyRecords.length === 0) return;
+
+    const hourNums = hourlyRecords
+      .map((r) => Number(r.hour))
+      .filter((n) => Number.isFinite(n));
+    if (hourNums.length === 0) return;
+
+    const maxHour = Math.max(...hourNums);
+    const totalWorkingHoursLocal = Math.max(1, header?.working_hour ?? maxHour + 1);
+    const nextHour = Math.min(maxHour + 1, totalWorkingHoursLocal);
+
+    setSelectedHour(nextHour);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hourlyRecords]);
 
   useEffect(() => {
     if (!header) return;
@@ -831,6 +861,9 @@ function HourlyHeaderCard({ header, auth, privileged }) {
         `/api/hourly-productions?${buildRecordParams().toString()}`,
       );
       const jsonList = await resList.json();
+      // Reset the "user manually picked" flag so the auto-advance effect
+      // below is allowed to move the dropdown to the next hour.
+      userPickedHourRef.current = false;
       if (resList.ok && jsonList.success) setHourlyRecords(jsonList.data || []);
       await refreshWip();
       setAchievedInput("");
@@ -1200,7 +1233,12 @@ function HourlyHeaderCard({ header, auth, privileged }) {
                   <select
                     className="select select-xs select-bordered dark:bg-slate-700 dark:text-white dark:border-amber-600 w-28 text-[11px] border-amber-500"
                     value={selectedHour}
-                    onChange={(e) => setSelectedHour(Number(e.target.value))}
+                    onChange={(e) => {
+                      // Manual selection — mark it so the auto-advance
+                      // effect doesn't immediately override this choice.
+                      userPickedHourRef.current = true;
+                      setSelectedHour(Number(e.target.value));
+                    }}
                   >
                     {hoursOptions.map((hVal) => (
                       <option key={hVal} value={hVal}>

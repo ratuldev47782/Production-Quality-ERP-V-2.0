@@ -306,11 +306,22 @@ export default function BulkHourEntryForm() {
     return JSON.stringify(baseline) !== JSON.stringify(current);
   };
 
+  // Inspected - Passed should equal Defective Pcs, so keep Defective Pcs in
+  // sync automatically whenever Inspected or Passed is edited. The user can
+  // still type directly into the Defective Pcs box to override it — that
+  // manual value only gets recalculated again if Inspected/Passed change
+  // afterward (same rule as the single-entry quality input page).
   const updateRow = (line, field, value) => {
-    setRowsMap((prev) => ({
-      ...prev,
-      [line]: { ...emptyRow(), ...prev[line], [field]: value },
-    }));
+    setRowsMap((prev) => {
+      const nextRow = { ...emptyRow(), ...prev[line], [field]: value };
+      if (field === "inspectedQty" || field === "passedQty") {
+        const inspectedNum = Number(nextRow.inspectedQty || 0);
+        const passedNum = Number(nextRow.passedQty || 0);
+        const autoDefective = inspectedNum - passedNum;
+        nextRow.defectivePcs = String(autoDefective > 0 ? autoDefective : 0);
+      }
+      return { ...prev, [line]: nextRow };
+    });
   };
 
   const addDefect = (line, defectName) => {
@@ -595,9 +606,11 @@ export default function BulkHourEntryForm() {
                     const isDraft = !hasExisting && rowHasData(row);
                     const defectTotal = row.selectedDefects.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0);
 
-                    // Inspected - Passed should equal Defective Pcs. Flag it in
-                    // red whenever the numbers don't reconcile, same rule as
-                    // the single-entry quality input page.
+                    // Inspected - Passed should equal Defective Pcs. Defective
+                    // Pcs is auto-calculated by updateRow whenever Inspected
+                    // or Passed changes, but the user may still type a custom
+                    // value directly — flag it in red whenever the numbers
+                    // don't reconcile, same rule as the single-entry page.
                     const inspectedNum = Number(row.inspectedQty || 0);
                     const passedNum = Number(row.passedQty || 0);
                     const defectiveNum = Number(row.defectivePcs || 0);
@@ -681,10 +694,16 @@ export default function BulkHourEntryForm() {
                                 : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:ring-emerald-400"
                             }`}
                           />
-                          {qtyMismatch && (
+                          {qtyMismatch ? (
                             <span className="mt-1 block text-[10px] text-red-600 dark:text-red-400 whitespace-nowrap">
                               Should be {expectedDefective}
                             </span>
+                          ) : (
+                            !disabled && hasQtyData && (
+                              <span className="mt-1 block text-[10px] text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                                Auto-calculated
+                              </span>
+                            )
                           )}
                         </td>
                         <td className="px-4 py-2.5 align-top">
