@@ -10,6 +10,8 @@ import {
   GitCompare,
   LogIn,
   LogOut,
+  Maximize,
+  Minimize,
   MonitorCloud,
   Package,
   PanelLeftRightDashed,
@@ -250,6 +252,7 @@ export default function SideNavbar() {
 
   const [expanded, setExpanded] = useState(false);
   const [openGroups, setOpenGroups] = useState({});
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   // ── Sync sidebar width → CSS variable on <html> so layout.js can use it ──
   useEffect(() => {
@@ -265,6 +268,25 @@ export default function SideNavbar() {
       `${COLLAPSED_W}px`,
     );
   }, []);
+
+  // ── Track fullscreen state so the icon/label stays in sync, e.g. if the
+  // user exits fullscreen via a TV remote/back button instead of this button.
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
 
   const handleLogout = () => {
     setAuth(null);
@@ -383,6 +405,22 @@ export default function SideNavbar() {
             )}
             <span style={fadeSlide(expanded)} className="text-[11px] font-bold">
               {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            </span>
+          </button>
+        </div>
+        <div>
+          <button
+            onClick={toggleFullscreen}
+            title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            className="w-full flex items-center gap-2.5 h-8 rounded-xl px-2 border border-slate-700 dark:border-slate-700 bg-slate-800/50 dark:bg-slate-800/70 text-slate-300 dark:text-slate-300 hover:bg-slate-700 dark:hover:bg-slate-700 hover:text-slate-100 dark:hover:text-slate-100 transition-all"
+          >
+            {isFullscreen ? (
+              <Minimize size={14} className="shrink-0 text-emerald-400 dark:text-emerald-300" />
+            ) : (
+              <Maximize size={14} className="shrink-0 text-emerald-400 dark:text-emerald-300" />
+            )}
+            <span style={fadeSlide(expanded)} className="text-[11px] font-bold">
+              {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
             </span>
           </button>
         </div>
